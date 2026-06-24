@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>pearOS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wallpaper" aria-hidden="true"></div>
+
+  <header class="menu-bar">
+    <div class="brand">
+      <span class="pear-mark" aria-hidden="true"></span>
+      <strong>pearOS</strong>
+    </div>
+    <span id="activeApp">Desktop</span>
+    <nav class="menus" aria-label="Application menu">
+      <span>File</span>
+      <span>Edit</span>
+      <span>View</span>
+      <span>Window</span>
+      <span>Help</span>
+    </nav>
+    <div class="status">
+      <span id="wifi">Wi‑Fi</span>
+      <span id="battery">87%</span>
+      <time id="clock"></time>
+    </div>
+  </header>
+
+  <main id="desktop" class="desktop" aria-label="pearOS desktop">
+    <button class="desktop-icon" data-open="finder">
+      <span class="app-glyph finder-glyph">□</span>
+      <span>Finder</span>
+    </button>
+    <button class="desktop-icon" data-open="terminal">
+      <span class="app-glyph terminal-glyph">›_</span>
+      <span>Terminal</span>
+    </button>
+    <button class="desktop-icon" data-open="devlogs">
+      <span class="app-glyph devlog-glyph">✦</span>
+      <span>Devlogs</span>
+    </button>
+    <button class="desktop-icon" data-open="about">
+      <span class="app-glyph about-glyph">?</span>
+      <span>About</span>
+    </button>
+  </main>
+
+  <nav class="dock" aria-label="Dock">
+    <button data-open="finder" aria-label="Open Finder"><span class="app-glyph finder-glyph">□</span></button>
+    <button data-open="terminal" aria-label="Open Terminal"><span class="app-glyph terminal-glyph">›_</span></button>
+    <button data-open="notes" aria-label="Open Notes"><span class="app-glyph notes-glyph">✎</span></button>
+    <button data-open="devlogs" aria-label="Open Devlogs"><span class="app-glyph devlog-glyph">✦</span></button>
+    <button data-open="settings" aria-label="Open Settings"><span class="app-glyph settings-glyph">●</span></button>
+    <button data-open="about" aria-label="Open About"><span class="app-glyph about-glyph">?</span></button>
+  </nav>
+
+  <dialog id="palette" class="palette" aria-labelledby="paletteTitle">
+    <form method="dialog" class="palette-box">
+      <h2 id="paletteTitle">Command Palette</h2>
+      <input id="paletteInput" autocomplete="off" spellcheck="false" placeholder="Open an app...">
+      <div id="paletteResults" class="palette-results" role="listbox"></div>
+      <p>Ctrl K / Command K to open. Enter launches. Escape closes.</p>
+    </form>
+  </dialog>
+
+  <script src="src/storage.js"></script>
+    <script src="src/data.js"></script>
+    <script src="src/theme.js"></script>
+    <script src="src/apps.js"></script>
+    <script src="src/windows.js"></script>
+    <script src="src/palette.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
