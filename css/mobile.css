@@ -1,0 +1,19 @@
+.window.maximized {
+  left: 12px;
+  top: 48px;
+  width: calc(100vw - 24px);
+  height: calc(100vh - 134px);
+}
+@media (max-width: 760px) {
+  .menus, .status span:not(#clock) { display: none; }
+  .desktop { padding: 18px 12px; }
+  .desktop-icon { width: 76px; margin-right: 8px; }
+  .dock { width: calc(100vw - 20px); justify-content: space-around; bottom: 10px; }
+  .dock .app-glyph { width: 42px; height: 42px; }
+  .window { left: 10px; top: 52px; width: calc(100vw - 20px); height: calc(100vh - 132px); min-width: 0; border-radius: 18px; }
+  .titlebar { cursor: default; }
+  .resize-handle { display: none; }
+  .grid { grid-template-columns: 1fr; }
+  .sidebar { display: flex; gap: 6px; overflow: auto; }
+  .sidebar button { flex: 0 0 auto; width: auto; }
+}
