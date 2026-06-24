@@ -1,0 +1,94 @@
+.menu-bar {
+  position: fixed;
+  z-index: 2000;
+  inset: 0 0 auto;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 16px;
+  background: var(--glass);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(18px);
+  font-size: 13px;
+}
+.brand, .status, .menus { display: flex; align-items: center; gap: 12px; }
+.brand { gap: 8px; }
+.menus { flex: 1; }
+.status, #activeApp { color: var(--muted); }
+#activeApp { min-width: 74px; font-weight: 700; }
+.pear-mark {
+  position: relative;
+  width: 18px;
+  height: 22px;
+  border-radius: 58% 42% 54% 46% / 42% 44% 58% 62%;
+  background: linear-gradient(145deg, #b9e071, var(--accent));
+  box-shadow: inset -3px -5px 10px rgba(32,75,20,.24);
+  transform: rotate(-10deg);
+}
+.pear-mark::before, .pear-mark::after { content: ""; position: absolute; }
+.pear-mark::before { top: -5px; left: 9px; width: 4px; height: 9px; border-radius: 3px; background: #6a4a27; transform: rotate(24deg); }
+.pear-mark::after { top: -6px; left: 12px; width: 10px; height: 6px; border-radius: 100% 0 100% 0; background: #7fbf55; transform: rotate(-16deg); }
+.desktop { position: fixed; inset: 36px 0 88px; padding: 26px; }
+.desktop-icon {
+  width: 86px;
+  margin: 0 22px 20px 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+  cursor: pointer;
+  padding: 10px 6px;
+  text-shadow: 0 1px 9px rgba(255,255,255,.8);
+}
+.desktop-icon:hover { background: rgba(255,255,255,.2); }
+.app-glyph {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, var(--solid), var(--accent));
+  border: 1px solid rgba(255,255,255,.58);
+  box-shadow: 0 12px 28px rgba(20,35,12,.18);
+  color: var(--strong);
+  font-weight: 900;
+}
+.terminal-glyph { background: linear-gradient(145deg, #172313, #314f24); color: #dff8b8; font-family: ui-monospace, Menlo, monospace; }
+.notes-glyph { background: linear-gradient(145deg, #fff2b8, #d4ee91); }
+.devlog-glyph { background: linear-gradient(145deg, #eff8de, #9bc65e); }
+.settings-glyph { background: linear-gradient(145deg, #e3e6df, #8ea17e); }
+.about-glyph { background: linear-gradient(145deg, #fff, #cae89b); }
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  z-index: 2100;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px 15px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: rgba(255,255,255,.36);
+  backdrop-filter: blur(22px);
+  box-shadow: 0 18px 50px rgba(0,0,0,.2);
+}
+.dock button { position: relative; border: 0; background: transparent; padding: 0; cursor: pointer; transition: transform .16s; }
+.dock button:hover { transform: translateY(-6px) scale(1.04); }
+.dock button::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  transform: translateX(-50%) scale(0);
+  background: var(--strong);
+}
+.dock button.running::after { transform: translateX(-50%) scale(1); }
+.dock button.active::after { width: 18px; border-radius: 999px; }
