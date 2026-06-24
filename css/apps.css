@@ -1,0 +1,35 @@
+.sidebar button, .theme-button, .file-button, .tab-button {
+  width: 100%;
+  margin: 4px 0;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.sidebar button:hover, .sidebar button.active, .theme-button:hover, .theme-button.active, .file-button:hover, .tab-button.active, .palette-result.selected {
+  background: rgba(120,173,72,.18);
+  border-color: rgba(120,173,72,.4);
+}
+.files, .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; align-content: start; }
+.file-button { min-height: 86px; background: rgba(255,255,255,.2); }
+.file-button strong, .card strong { display: block; margin-bottom: 7px; }
+.file-button span, .card span, .help-text, .small { color: var(--muted); font-size: 13px; line-height: 1.45; }
+.terminal { height: 100%; display: flex; flex-direction: column; gap: 12px; background: #10170e; color: #dbf6b7; font-family: ui-monospace, Menlo, Consolas, monospace; border-radius: 14px; padding: 14px; }
+.terminal-output { flex: 1; overflow: auto; white-space: pre-wrap; }
+.terminal form { display: flex; gap: 8px; align-items: center; }
+.terminal input { flex: 1; border: 0; outline: 0; background: transparent; color: inherit; caret-color: #dbf6b7; }
+.notes-area { width: 100%; min-height: 220px; resize: vertical; border: 1px solid var(--line); border-radius: 18px; padding: 14px; color: var(--text); background: var(--panel); user-select: text; }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.devlog-text h3, .window-body h2, .window-body h3 { margin-top: 0; }
+.checklist { display: grid; gap: 8px; padding: 0; list-style: none; }
+.checklist li { padding: 9px 10px; border-radius: 12px; background: rgba(120,173,72,.16); }
+.palette { width: min(560px, calc(100vw - 28px)); border: 0; padding: 0; background: transparent; color: var(--text); }
+.palette::backdrop { background: rgba(5,10,4,.34); backdrop-filter: blur(8px); }
+.palette-box { padding: 18px; box-shadow: var(--shadow); background: var(--solid); }
+.palette input { width: 100%; padding: 13px 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); color: var(--text); }
+.palette-results { display: grid; gap: 6px; margin: 12px 0; }
+.palette-result { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px; border: 1px solid transparent; border-radius: 14px; background: transparent; cursor: pointer; }
+.palette-result .app-glyph { width: 34px; height: 34px; border-radius: 12px; font-size: 14px; }
+.palette p { margin: 0; color: var(--muted); font-size: 12px; }
