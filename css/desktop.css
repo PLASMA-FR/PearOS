@@ -189,6 +189,52 @@
   overflow: hidden;
 }
 
+.desktop-icons {
+  position: absolute;
+  left: clamp(18px, 2.2vw, 34px);
+  bottom: 24px;
+  z-index: 8;
+  display: grid;
+  grid-template-columns: repeat(2, 82px);
+  gap: 15px;
+}
+
+.desktop-icons button {
+  width: 82px;
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  padding: 8px 6px;
+  color: var(--deep);
+  cursor: pointer;
+  text-align: center;
+  text-shadow: 0 1px 8px rgba(255, 255, 238, .55);
+}
+
+.desktop-icons button:hover,
+.desktop-icons button:focus-visible {
+  border-color: rgba(255, 255, 255, .52);
+  background: rgba(255, 253, 236, .28);
+  backdrop-filter: blur(14px);
+}
+
+.desktop-icons .app-glyph {
+  width: 54px;
+  height: 54px;
+  border-radius: 13px;
+}
+
+.desktop-icons strong {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 900;
+}
+
 .hero-panel {
   position: absolute;
   left: clamp(38px, 4.7vw, 80px);
@@ -407,6 +453,18 @@
   font-size: 14px;
 }
 
+.phone-search input {
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #26341f;
+}
+
+.phone-search input::placeholder {
+  color: rgba(49, 72, 35, .68);
+}
+
 kbd {
   min-width: 24px;
   display: inline-grid;
@@ -444,7 +502,7 @@ kbd {
 }
 
 .phone-list button:hover,
-.phone-list button:first-child {
+.phone-list button.selected {
   border-color: rgba(127, 163, 74, .25);
   background: rgba(213, 230, 159, .38);
 }
@@ -494,6 +552,14 @@ kbd {
   margin-top: 16px;
   color: rgba(42, 53, 34, .58);
   font-size: 10px;
+}
+
+.runner-empty {
+  margin: 18px 6px;
+  color: rgba(51, 63, 38, .66);
+  font-size: 13px;
+  font-weight: 750;
+  text-align: center;
 }
 
 .app-glyph,
@@ -661,6 +727,10 @@ kbd {
   transform: translateY(-5px);
 }
 
+.dock button:focus-visible {
+  transform: translateY(-5px);
+}
+
 .dock .app-glyph {
   width: 100%;
   height: 100%;
@@ -697,6 +767,17 @@ kbd {
 
 [data-theme="graphite"] .menu-bar {
   background: rgba(42, 44, 38, .82);
+}
+
+[data-theme="midnight"] .desktop-icons button,
+[data-theme="graphite"] .desktop-icons button {
+  color: var(--text);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, .35);
+}
+
+[data-theme="midnight"] .phone-search input,
+[data-theme="graphite"] .phone-search input {
+  color: var(--text);
 }
 
 [data-theme="midnight"] #activeApp,

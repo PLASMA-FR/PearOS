@@ -67,20 +67,26 @@ const folders = {
     {
       name: "pearos.txt",
       kind: "Text",
-      detail: "pearOS is a static browser desktop made for Hack Club.",
-      body: "A small desktop simulation with draggable windows, a dock, themes, a command palette, and saved local notes."
+      detail: "A quick project summary for reviewers.",
+      body: "pearOS is a static Hack Club WebOS-style desktop with draggable windows, a dock, desktop icons, themes, a command palette, games, notes, and devlogs."
     },
     {
       name: "roadmap.md",
       kind: "Markdown",
       detail: "Polish tasks that would make the OS feel more complete.",
-      body: "Next ideas: wallpaper picker, sketch pad, file search, split-view windows, and exportable notes."
+      body: "Next ideas: wallpaper picker, note export, more mini apps, split-view windows, and a tiny file preview search."
     },
     {
       name: "hackclub.md",
       kind: "Markdown",
       detail: "Requirements tracked for a public WebOS-style mission.",
       body: "No password gate. Include devlogs. Keep the design original. Make the page easy to test."
+    },
+    {
+      name: "live-url.txt",
+      kind: "Text",
+      detail: "Expected GitHub Pages address.",
+      body: "https://plasma-fr.github.io/PearOS/"
     }
   ],
   Projects: [
@@ -149,9 +155,9 @@ const folders = {
 };
 
 const logs = [
-  ["Desktop foundation", "I started with the wallpaper, menu bar, dock, icons, and Finder shell. The first draft used too much glass, so I made app content more solid and kept the pear identity in CSS."],
-  ["Window manager and apps", "I added dragging, stacking, resize, close, minimize, maximize, Finder folders, and Terminal commands. Pointer capture fixed drag bugs when the pointer moved fast."],
-  ["Custom features and polish", "I added the Command Palette, Notes saving, three themes, layout persistence, devlog tabs, and a mobile layout that is easier to test on a phone."]
+  ["Desktop foundation", "I started with the wallpaper, menu bar, dock, desktop icons, and Finder shell. The first draft used too much glass, so I made app content more solid and kept the pear identity in CSS instead of borrowed assets."],
+  ["Window manager and apps", "I added dragging, stacking, resize, close, minimize, maximize, Finder folders, Terminal commands, Notes, Calculator, Sketch, and two small games. Pointer capture fixed drag bugs when the pointer moved fast."],
+  ["Custom features and polish", "I added the Command Palette, app runner search, three themes, Notes saving, layout persistence, devlogs inside the OS, and a mobile layout that keeps every app testable on a phone."]
 ];
 
 const appMeta = {

@@ -30,6 +30,25 @@
   </header>
 
   <main id="desktop" class="desktop" aria-label="pearOS desktop">
+    <section class="desktop-icons" aria-label="Desktop apps">
+      <button type="button" data-open="finder" aria-label="Open Finder from desktop">
+        <span class="app-glyph finder-glyph" aria-hidden="true">□</span>
+        <strong>Finder</strong>
+      </button>
+      <button type="button" data-open="notes" aria-label="Open Notes from desktop">
+        <span class="app-glyph notes-glyph" aria-hidden="true">✎</span>
+        <strong>Notes</strong>
+      </button>
+      <button type="button" data-open="terminal" aria-label="Open Terminal from desktop">
+        <span class="app-glyph terminal-glyph" aria-hidden="true">>_</span>
+        <strong>Terminal</strong>
+      </button>
+      <button type="button" data-open="devlogs" aria-label="Open Devlogs from desktop">
+        <span class="app-glyph devlog-glyph" aria-hidden="true">✦</span>
+        <strong>Devlogs</strong>
+      </button>
+    </section>
+
     <section class="hero-panel" aria-label="pearOS overview">
       <div class="hero-lockup">
         <span class="hero-pear" aria-hidden="true"></span>
@@ -64,8 +83,8 @@
     <aside id="appRunner" class="phone-preview" aria-label="pearOS application runner">
       <button class="runner-close" type="button" data-close-runner aria-label="Close application runner">×</button>
       <div class="phone-status"><span>10:51 PM</span><span>▮▮▮  Wi‑Fi ▰</span></div>
-      <div class="phone-search"><span>⌕</span><span>Search apps...</span><kbd>Esc</kbd></div>
-      <div id="runnerList" class="phone-list"></div>
+      <label class="phone-search" for="runnerSearch"><span aria-hidden="true">⌕</span><input id="runnerSearch" autocomplete="off" spellcheck="false" placeholder="Search apps..."><kbd>Esc</kbd></label>
+      <div id="runnerList" class="phone-list" role="listbox" aria-label="Applications"></div>
       <div class="phone-help"><kbd>↑</kbd><kbd>↓</kbd><span>move</span><kbd>Enter</kbd><span>open</span></div>
     </aside>
   </main>
@@ -83,10 +102,12 @@
   <dialog id="palette" class="palette" aria-labelledby="paletteTitle">
     <form method="dialog" class="palette-box">
       <h2 id="paletteTitle">Command Palette</h2>
-      <input id="paletteInput" autocomplete="off" spellcheck="false" placeholder="Open an app...">
+      <input id="paletteInput" autocomplete="off" spellcheck="false" placeholder="Open an app..." aria-label="Search apps">
       <div id="paletteResults" class="palette-results" role="listbox"></div>
     </form>
   </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="src/storage.js"></script>
   <script src="src/data.js"></script>

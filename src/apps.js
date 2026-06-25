@@ -32,7 +32,7 @@ function folderNames() {
 
 function finder() {
   const buttons = folderNames()
-    .map((name, index) => `<button data-folder="${name}" class="${index ? "" : "active"}">${name}</button>`)
+    .map((name, index) => `<button type="button" data-folder="${name}" class="${index ? "" : "active"}">${name}</button>`)
     .join("");
 
   return `<div class="finder-shell">
@@ -40,9 +40,12 @@ function finder() {
     <section class="finder-content">
       <header class="finder-heading">
         <div><small>pearOS</small><h2>Applications</h2></div>
-        <span class="finder-count">6 items</span>
+        <span class="finder-count"></span>
       </header>
-      <div class="files" aria-label="Files"></div>
+      <div class="finder-main">
+        <div class="files" role="listbox" aria-label="Files"></div>
+        <aside class="file-preview" aria-live="polite"></aside>
+      </div>
     </section>
   </div>`;
 }
@@ -58,17 +61,51 @@ function fileGlyph(file) {
 function renderFolder(win, name, selectedIndex = 0) {
   const files = folders[name] || [];
   win.dataset.folder = name;
+  win.dataset.fileIndex = String(files[selectedIndex] ? selectedIndex : 0);
   const heading = win.querySelector(".finder-heading h2");
   const count = win.querySelector(".finder-count");
   if (heading) heading.textContent = name;
   if (count) count.textContent = `${files.length} ${files.length === 1 ? "item" : "items"}`;
   win.querySelector(".files").innerHTML = files.map((file, index) => {
     const selected = index === selectedIndex ? " selected" : "";
-    return `<button class="file-button${selected}" data-file-index="${index}">
+    return `<button type="button" class="file-button${selected}" data-file-index="${index}" role="option" aria-selected="${index === selectedIndex ? "true" : "false"}">
       ${fileGlyph(file)}
-      <span><strong>${escapeHtml(file.name)}</strong></span>
+      <span><strong>${escapeHtml(file.name)}</strong><small>${escapeHtml(file.kind)}</small></span>
     </button>`;
   }).join("");
+  renderFilePreview(win);
+}
+
+function selectedFile(win) {
+  const files = folders[win.dataset.folder] || [];
+  return files[Number(win.dataset.fileIndex)] || files[0];
+}
+
+function renderFilePreview(win) {
+  const file = selectedFile(win);
+  const preview = win.querySelector(".file-preview");
+  if (!preview || !file) return;
+  preview.innerHTML = `<div class="preview-glyph">${fileGlyph(file)}</div>
+    <small>${escapeHtml(file.kind)}</small>
+    <h3>${escapeHtml(file.name)}</h3>
+    <p>${escapeHtml(file.detail || "")}</p>
+    ${file.body ? `<blockquote>${escapeHtml(file.body)}</blockquote>` : ""}
+    ${file.app ? `<button type="button" class="primary-action" data-open-file>Open ${escapeHtml(appMeta[file.app][0])}</button>` : ""}`;
+}
+
+function selectFile(win, button) {
+  win.querySelectorAll("[data-file-index]").forEach(item => {
+    const selected = item === button;
+    item.classList.toggle("selected", selected);
+    item.setAttribute("aria-selected", selected ? "true" : "false");
+  });
+  win.dataset.fileIndex = button.dataset.fileIndex;
+  renderFilePreview(win);
+}
+
+function openSelectedFile(win, openApp) {
+  const file = selectedFile(win);
+  if (file && file.app) openApp(file.app);
 }
 
 function wireFinder(win, openApp) {
@@ -88,20 +125,29 @@ function wireFinder(win, openApp) {
     }
     const fileButton = event.target.closest("[data-file-index]");
     if (!fileButton) return;
-    win.querySelectorAll("[data-file-index]").forEach(item => item.classList.remove("selected"));
-    fileButton.classList.add("selected");
+    selectFile(win, fileButton);
   });
   win.addEventListener("dblclick", event => {
     const fileButton = event.target.closest("[data-file-index]");
     if (!fileButton) return;
-    const file = folders[win.dataset.folder][Number(fileButton.dataset.fileIndex)];
-    if (file.app) openApp(file.app);
+    selectFile(win, fileButton);
+    openSelectedFile(win, openApp);
+  });
+  win.addEventListener("click", event => {
+    if (event.target.closest("[data-open-file]")) openSelectedFile(win, openApp);
+  });
+  win.addEventListener("keydown", event => {
+    if (event.key !== "Enter") return;
+    const fileButton = event.target.closest("[data-file-index]");
+    if (!fileButton) return;
+    selectFile(win, fileButton);
+    openSelectedFile(win, openApp);
   });
 }
 
 function terminal() {
   return `<div class="terminal">
-    <div class="terminal-output">pear@pearos ~ $ hello, world! 🍐
+    <div class="terminal-output" aria-live="polite">pear@pearos ~ $ hello, world! 🍐
 
 pear@pearos ~ $ </div>
     <form><span>pear@pearos ~ $</span><input aria-label="Terminal command" autocomplete="off" spellcheck="false"></form>
@@ -109,8 +155,12 @@ pear@pearos ~ $ </div>
 }
 
 function appIdFromText(value) {
-  const normalized = value.replace(/\s+/g, "");
+  const normalized = value.trim().toLowerCase().replace(/\s+/g, "");
   return Object.keys(appMeta).find(id => id === normalized || appMeta[id][0].toLowerCase().replace(/\s+/g, "") === normalized);
+}
+
+function appCommandList() {
+  return Object.entries(appMeta).map(([id, app]) => `open ${id.padEnd(12)} ${app[0]}`).join("\n");
 }
 
 function reply(command, openApp) {
@@ -119,8 +169,18 @@ function reply(command, openApp) {
   if (value === "help") {
     return [
       "help                 show commands",
+      "about                explain pearOS",
       "apps                 list apps",
-      "open calculator      open an app",
+      "open finder          open Finder",
+      "open terminal        open Terminal",
+      "open notes           open Notes",
+      "open devlogs         open Devlogs",
+      "open settings        open Settings",
+      "open about           open About pearOS",
+      "open calculator      open Calculator",
+      "open sketch          open Sketch",
+      "open pearcatch       open Pear Catch",
+      "open pairs           open Pear Pairs",
       "theme midnight       switch theme",
       "reset layout         restore window positions",
       "date                 show local date",
@@ -128,10 +188,12 @@ function reply(command, openApp) {
       "clear                clear terminal"
     ].join("\n");
   }
-  if (value === "about") return "pearOS is a static browser desktop built for a Hack Club WebOS mission.";
-  if (value === "apps") return Object.values(appMeta).map(app => app[0]).join(", ");
-  if (value === "whoami") return "guest student using a public pearOS demo";
+  if (value === "about") return "pearOS is a static pear-themed WebOS project for Hack Club. It uses plain HTML, CSS, and JavaScript with no login gate.";
+  if (value === "apps") return appCommandList();
+  if (value === "whoami") return "guest student using the public pearOS demo";
   if (value === "date") return new Date().toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+  if (value === "pwd") return "/Users/pear/Desktop";
+  if (value === "ls") return folderNames().join("  ");
   if (value === "clear") return "clear";
   if (value === "reset layout") {
     resetWindowLayout();
@@ -147,12 +209,12 @@ function reply(command, openApp) {
     return `No theme named ${theme}.`;
   }
   if (value.startsWith("open ")) {
-    const id = appIdFromText(value.replace("open ", "").trim());
+    const id = appIdFromText(value.slice(5));
     if (appMeta[id]) {
       openApp(id);
       return `Opened ${appMeta[id][0]}.`;
     }
-    return `No app named ${value.replace("open ", "").trim()}.`;
+    return `No app named ${value.slice(5).trim()}. Try apps.`;
   }
   return `${command}: command not found. Try help.`;
 }
@@ -203,8 +265,8 @@ function wireNotes(win) {
   const area = win.querySelector("textarea");
   const count = win.querySelector(".note-count");
   area.addEventListener("input", event => {
-    setValue("pear-note", event.target.value);
-    count.textContent = "Saved locally";
+    const saved = setValue("pear-note", event.target.value);
+    count.textContent = saved ? "Saved locally" : "Saved for this visit";
   });
 }
 
@@ -411,16 +473,16 @@ function wirePairs(win) {
 }
 
 function devlogs() {
-  const tabs = logs.map((log, index) => `<button class="tab-button ${index ? "" : "active"}" role="tab" aria-selected="${index ? "false" : "true"}" data-log="${index}">Devlog ${index + 1}</button>`).join("");
-  return `<div class="devlog-app"><div class="tabs" role="tablist">${tabs}</div><article class="devlog-text" tabindex="0"></article></div>`;
-}
-
-function renderLog(win, index) {
-  win.querySelector(".devlog-text").innerHTML = `<h3>${logs[index][0]}</h3><p>${logs[index][1]}</p>`;
+  const tabs = logs.map((log, index) => `<button type="button" class="tab-button ${index ? "" : "active"}" role="tab" aria-selected="${index ? "false" : "true"}" data-log="${index}">Devlog ${index + 1}</button>`).join("");
+  const articles = logs.map((log, index) => `<article class="devlog-text" id="devlog-${index}" tabindex="0">
+    <small>Devlog ${index + 1}</small>
+    <h3>${escapeHtml(log[0])}</h3>
+    <p>${escapeHtml(log[1])}</p>
+  </article>`).join("");
+  return `<div class="devlog-app"><div class="tabs" role="tablist">${tabs}</div><div class="devlog-list">${articles}</div></div>`;
 }
 
 function wireLogs(win) {
-  renderLog(win, 0);
   win.querySelectorAll(".tab-button").forEach(button => {
     button.addEventListener("click", () => {
       win.querySelectorAll(".tab-button").forEach(item => {
@@ -429,7 +491,7 @@ function wireLogs(win) {
       });
       button.classList.add("active");
       button.setAttribute("aria-selected", "true");
-      renderLog(win, Number(button.dataset.log));
+      win.querySelector(`#devlog-${button.dataset.log}`).scrollIntoView({ behavior: "smooth", block: "nearest" });
     });
   });
 }
@@ -463,24 +525,36 @@ function wireSettings(win) {
   win.querySelectorAll(".theme-button").forEach(button => {
     button.addEventListener("click", () => setTheme(button.dataset.theme));
   });
-  win.querySelector("[data-action='reset-layout']").addEventListener("click", () => resetWindowLayout());
+  win.querySelector("[data-action='reset-layout']").addEventListener("click", () => {
+    resetWindowLayout();
+    if (window.showToast) window.showToast("Window layout reset");
+  });
 }
 
 function about() {
   return `<div class="about-app">
     <h2>About pearOS</h2>
-    <p>pearOS is a macOS-inspired web desktop with its own pear identity, made for Hack Club using plain HTML, CSS, and JavaScript.</p>
+    <p>pearOS is a WebOS-style desktop with its own pear identity, made for Hack Club using plain HTML, CSS, and JavaScript. It is designed to feel friendly, public, and easy to test without copying proprietary desktop assets.</p>
     <div class="about-grid">
       <div><strong>Stack</strong><span>Static HTML, CSS, JS</span></div>
-      <div><strong>Storage</strong><span>Browser localStorage</span></div>
+      <div><strong>Storage</strong><span>Theme, note, and safe layout persistence</span></div>
       <div><strong>Access</strong><span>No password gate</span></div>
+      <div><strong>Custom feature</strong><span>Ctrl/Cmd + K command palette</span></div>
+      <div><strong>Pages URL</strong><span>https://plasma-fr.github.io/PearOS/</span></div>
+      <div><strong>Assets</strong><span>Original CSS icons and wallpaper</span></div>
     </div>
+    <section class="tips-card">
+      <h3>Welcome tips</h3>
+      <p>Open apps from the dock, desktop icons, Finder, Terminal, or the Command Palette. Notes save locally, Settings can reset the layout, and every app stays usable on small screens.</p>
+    </section>
     <h3>Mission checklist</h3>
     <ul class="checklist">
       <li>✓ Multiple draggable windows</li>
+      <li>✓ Dock and desktop app launchers</li>
       <li>✓ Original design, not a guide copy</li>
       <li>✓ Three devlogs in the OS and Markdown files</li>
       <li>✓ Extra feature: Command Palette</li>
+      <li>✓ Static GitHub Pages-ready structure</li>
       <li>✓ Public and testable with no password</li>
     </ul>
   </div>`;

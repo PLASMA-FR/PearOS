@@ -4,10 +4,17 @@ const openWindows = new Map();
 const desktop = document.querySelector("#desktop");
 const activeLabel = document.querySelector("#activeApp");
 const mobile = matchMedia("(max-width:760px)");
-const layoutVersion = "pear-showcase-v1";
+const layoutVersion = "pear-showcase-v2";
 
 function clampNumber(value, min, max) {
-  return Math.min(Math.max(value, min), max);
+  const number = Number(value);
+  if (!Number.isFinite(number)) return min;
+  return Math.min(Math.max(number, min), max);
+}
+
+function finite(value, fallback) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
 }
 
 function dockSpace() {
@@ -45,14 +52,14 @@ function clamp(box) {
   if (mobile.matches) return mobileBox();
   const maxWidth = Math.max(320, innerWidth - 20);
   const maxHeight = Math.max(260, innerHeight - dockSpace() - 46);
-  const width = Math.min(Math.max(box.width ?? 560, 320), maxWidth);
-  const height = Math.min(Math.max(box.height ?? 360, 260), maxHeight);
+  const width = Math.min(Math.max(finite(box.width, 560), 320), maxWidth);
+  const height = Math.min(Math.max(finite(box.height, 360), 260), maxHeight);
   const bounds = area(width, height);
   return {
     width,
     height,
-    left: Math.min(Math.max(box.left ?? 90, bounds.left), bounds.right),
-    top: Math.min(Math.max(box.top ?? 70, bounds.top), bounds.bottom)
+    left: Math.min(Math.max(finite(box.left, 90), bounds.left), bounds.right),
+    top: Math.min(Math.max(finite(box.top, 70), bounds.top), bounds.bottom)
   };
 }
 
@@ -92,10 +99,10 @@ function geometry(id) {
 
 function currentBox(win) {
   return {
-    left: parseFloat(win.style.left),
-    top: parseFloat(win.style.top),
-    width: parseFloat(win.style.width),
-    height: parseFloat(win.style.height)
+    left: finite(parseFloat(win.style.left), 90),
+    top: finite(parseFloat(win.style.top), 70),
+    width: finite(parseFloat(win.style.width), 560),
+    height: finite(parseFloat(win.style.height), 360)
   };
 }
 
@@ -109,7 +116,7 @@ function place(win, box) {
 function save(id, win) {
   if (mobile.matches || win.classList.contains("maximized")) return;
   const all = getJson("pear-windows", {});
-  all[id] = currentBox(win);
+  all[id] = clamp(currentBox(win));
   setJson("pear-windows", all);
 }
 
@@ -138,6 +145,7 @@ function updateDock() {
     const win = openWindows.get(id);
     button.classList.toggle("running", Boolean(win));
     button.classList.toggle("active", id === activeApp && Boolean(win) && !win.classList.contains("minimized"));
+    if (id) button.setAttribute("aria-pressed", id === activeApp && Boolean(win) && !win.classList.contains("minimized") ? "true" : "false");
   });
 }
 
@@ -173,6 +181,7 @@ function openApp(id) {
   let win = openWindows.get(id);
   if (win) {
     win.classList.remove("minimized");
+    if (win.classList.contains("maximized")) place(win, maximizeBox());
     focusWindow(id);
     return;
   }
@@ -207,6 +216,7 @@ function wireWindow(win, id) {
   win.querySelector(".close").addEventListener("click", event => {
     event.stopPropagation();
     const wasActive = activeApp === id;
+    removeValue(`pear-restore-${id}`);
     win.remove();
     openWindows.delete(id);
     if (wasActive) focusNextWindow(id);
@@ -276,8 +286,8 @@ function resize(win, id) {
     const startWidth = parseFloat(win.style.width);
     const startHeight = parseFloat(win.style.height);
     const move = moveEvent => {
-      const maxWidth = innerWidth - parseFloat(win.style.left) - 10;
-      const maxHeight = innerHeight - parseFloat(win.style.top) - dockSpace();
+      const maxWidth = Math.max(320, innerWidth - finite(parseFloat(win.style.left), 0) - 10);
+      const maxHeight = Math.max(260, innerHeight - finite(parseFloat(win.style.top), 0) - dockSpace());
       win.style.width = `${Math.min(Math.max(startWidth + moveEvent.clientX - startX, 320), maxWidth)}px`;
       win.style.height = `${Math.min(Math.max(startHeight + moveEvent.clientY - startY, 260), maxHeight)}px`;
     };
@@ -291,6 +301,20 @@ function resize(win, id) {
     handle.addEventListener("pointermove", move);
     handle.addEventListener("pointerup", stop);
     handle.addEventListener("pointercancel", stop);
+  });
+  handle.addEventListener("keydown", event => {
+    if (mobile.matches || win.classList.contains("maximized")) return;
+    if (!["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(event.key)) return;
+    event.preventDefault();
+    const step = event.shiftKey ? 40 : 16;
+    const box = currentBox(win);
+    const next = {
+      ...box,
+      width: box.width + (event.key === "ArrowRight" ? step : event.key === "ArrowLeft" ? -step : 0),
+      height: box.height + (event.key === "ArrowDown" ? step : event.key === "ArrowUp" ? -step : 0)
+    };
+    place(win, clamp(next));
+    save(id, win);
   });
 }
 

@@ -4,7 +4,7 @@
 
 I added the window manager and the main apps. Windows can open from desktop icons or the dock, move by dragging the title bar, come to the front when clicked, resize from the corner, minimize, maximize, and close.
 
-Finder now has folders and fake files. Terminal supports real commands instead of just displaying fake terminal text.
+Finder now has folders, fake project files, previews, and app files that open apps. Terminal supports real commands instead of just displaying fake terminal text.
 
 ## What problem happened
 
@@ -19,8 +19,8 @@ I used Pointer Events with pointer capture so dragging continues until the point
 - Multiple windows can overlap
 - Focus and stacking behave consistently
 - Dock dots show running apps
-- Finder folders update the file area
-- Terminal can open apps with commands
+- Finder folders update the file area and preview pane
+- Terminal can open every app with commands
 - Window geometry can be saved locally
 
 ## What is next

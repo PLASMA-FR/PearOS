@@ -15,16 +15,27 @@ const store = (() => {
 })();
 
 function getValue(key, fallback) {
-  const value = store.getItem(key);
-  return value === null ? fallback : value;
+  try {
+    const value = store.getItem(key);
+    return value === null ? fallback : value;
+  } catch {
+    return fallback;
+  }
 }
 
 function setValue(key, value) {
-  store.setItem(key, value);
+  try {
+    store.setItem(key, value);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function removeValue(key) {
-  store.removeItem(key);
+  try {
+    store.removeItem(key);
+  } catch {}
 }
 
 function getJson(key, fallback) {
@@ -38,7 +49,7 @@ function getJson(key, fallback) {
 }
 
 function setJson(key, value) {
-  store.setItem(key, JSON.stringify(value));
+  return setValue(key, JSON.stringify(value));
 }
 
 function escapeHtml(value) {

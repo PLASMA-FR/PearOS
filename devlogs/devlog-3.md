@@ -4,7 +4,7 @@
 
 I finished the Command Palette, which is the extra feature beyond the basic WebOS guide. Pressing Ctrl K or Command K opens a centered launcher where I can search apps and press Enter to open one.
 
-I also added three themes, editable Notes, devlogs inside the OS, localStorage persistence, keyboard resizing from the handle, and a mobile-friendly window layout.
+I also added three themes, editable Notes, devlogs inside the OS, localStorage persistence, keyboard resizing from the handle, an App Runner search panel, desktop icons, and a mobile-friendly window layout.
 
 ## What problem happened
 
@@ -19,6 +19,7 @@ On small screens, pearOS ignores desktop coordinates visually and gives open win
 ## What changed visually or technically
 
 - Added Command Palette search
+- Added App Runner search and desktop launch icons
 - Added Pear Light, Midnight Green, and Graphite themes
 - Saved the selected theme to localStorage
 - Saved Notes content locally
