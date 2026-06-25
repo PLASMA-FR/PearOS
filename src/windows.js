@@ -4,6 +4,11 @@ const openWindows = new Map();
 const desktop = document.querySelector("#desktop");
 const activeLabel = document.querySelector("#activeApp");
 const mobile = matchMedia("(max-width:760px)");
+const layoutVersion = "pear-showcase-v1";
+
+function clampNumber(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
 
 function dockSpace() {
   return mobile.matches ? 118 : 112;
@@ -52,6 +57,29 @@ function clamp(box) {
 }
 
 function defaultGeometry(id) {
+  if (!mobile.matches && innerWidth >= 980) {
+    const staged = {
+      finder: {
+        left: clampNumber(innerWidth * .45, 560, innerWidth - 690),
+        top: clampNumber(innerHeight * .12, 112, 150),
+        width: 635,
+        height: 440
+      },
+      notes: {
+        left: clampNumber(innerWidth * .48, 575, innerWidth - 520),
+        top: clampNumber(innerHeight * .54, 455, innerHeight - 330),
+        width: 365,
+        height: 270
+      },
+      terminal: {
+        left: clampNumber(innerWidth * .72, 760, innerWidth - 430),
+        top: clampNumber(innerHeight * .36, 330, 370),
+        width: 260,
+        height: 420
+      }
+    };
+    if (staged[id]) return clamp(staged[id]);
+  }
   const index = Math.max(0, Object.keys(appMeta).indexOf(id));
   const app = appMeta[id];
   return clamp({ left: 96 + index * 34, top: 74 + index * 24, width: app[3], height: app[4] });
@@ -268,6 +296,7 @@ function resize(win, id) {
 
 function resetWindowLayout() {
   removeValue("pear-windows");
+  setValue("pear-layout-version", layoutVersion);
   openWindows.forEach((win, id) => {
     removeValue(`pear-restore-${id}`);
     win.classList.remove("maximized");
@@ -277,7 +306,36 @@ function resetWindowLayout() {
   focusNextWindow();
 }
 
+function ensureLayoutVersion() {
+  if (getValue("pear-layout-version", "") === layoutVersion) return;
+  removeValue("pear-windows");
+  Object.keys(appMeta).forEach(id => removeValue(`pear-restore-${id}`));
+  setValue("pear-layout-version", layoutVersion);
+}
+
+function stageShowcase() {
+  ["finder", "notes", "terminal"].forEach(openApp);
+  const order = [
+    ["finder", 34],
+    ["terminal", 36],
+    ["notes", 37]
+  ];
+  order.forEach(([id, z]) => {
+    const win = openWindows.get(id);
+    if (!win) return;
+    win.classList.remove("active", "minimized", "maximized");
+    win.style.zIndex = z;
+    place(win, defaultGeometry(id));
+  });
+  activeApp = "finder";
+  activeLabel.textContent = "Finder";
+  const finder = openWindows.get("finder");
+  if (finder) finder.classList.add("active");
+  updateDock();
+}
+
 function initWindowLaunchers() {
+  ensureLayoutVersion();
   document.querySelectorAll("[data-open]").forEach(button => {
     button.addEventListener("click", () => openApp(button.dataset.open));
   });

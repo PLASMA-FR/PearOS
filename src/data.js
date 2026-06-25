@@ -31,7 +31,7 @@ const folders = {
       app: "settings"
     },
     {
-      name: "About",
+      name: "About pearOS",
       kind: "Application",
       detail: "Project identity and checklist.",
       app: "about"
@@ -129,10 +129,10 @@ const logs = [
 ];
 
 const appMeta = {
-  finder: ["Finder", "□", "finder-glyph", 720, 460, "Files and apps"],
-  terminal: ["Terminal", ">_", "terminal-glyph", 680, 420, "Command shell"],
-  notes: ["Notes", "✎", "notes-glyph", 560, 400, "Local note"],
+  finder: ["Finder", "□", "finder-glyph", 635, 440, "Files and apps"],
+  terminal: ["Terminal", ">_", "terminal-glyph", 260, 420, "Command shell"],
+  notes: ["Notes", "✎", "notes-glyph", 365, 270, "Local note"],
   devlogs: ["Devlogs", "✦", "devlog-glyph", 640, 440, "Build journal"],
   settings: ["Settings", "●", "settings-glyph", 540, 360, "Desktop controls"],
-  about: ["About", "?", "about-glyph", 580, 440, "Project info"]
+  about: ["About pearOS", "P", "about-glyph", 580, 440, "Project info"]
 };

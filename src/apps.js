@@ -28,9 +28,14 @@ function finder() {
     .join("");
 
   return `<div class="finder-shell">
-    <aside class="sidebar">${buttons}</aside>
-    <section class="files" aria-label="Files"></section>
-    <aside class="file-preview" aria-live="polite"></aside>
+    <aside class="sidebar"><span class="sidebar-title">Favorites</span>${buttons}</aside>
+    <section class="finder-content">
+      <header class="finder-heading">
+        <div><small>pearOS</small><h2>Applications</h2></div>
+        <span class="finder-count">6 items</span>
+      </header>
+      <div class="files" aria-label="Files"></div>
+    </section>
   </div>`;
 }
 
@@ -45,33 +50,17 @@ function fileGlyph(file) {
 function renderFolder(win, name, selectedIndex = 0) {
   const files = folders[name] || [];
   win.dataset.folder = name;
+  const heading = win.querySelector(".finder-heading h2");
+  const count = win.querySelector(".finder-count");
+  if (heading) heading.textContent = name;
+  if (count) count.textContent = `${files.length} ${files.length === 1 ? "item" : "items"}`;
   win.querySelector(".files").innerHTML = files.map((file, index) => {
     const selected = index === selectedIndex ? " selected" : "";
     return `<button class="file-button${selected}" data-file-index="${index}">
       ${fileGlyph(file)}
-      <span><strong>${escapeHtml(file.name)}</strong><small>${escapeHtml(file.kind)}</small></span>
+      <span><strong>${escapeHtml(file.name)}</strong></span>
     </button>`;
   }).join("");
-  renderPreview(win, files[selectedIndex]);
-}
-
-function renderPreview(win, file) {
-  const preview = win.querySelector(".file-preview");
-  if (!file) {
-    preview.innerHTML = `<div class="empty-preview">No file selected</div>`;
-    return;
-  }
-  const launch = file.app ? `<button class="primary-action" data-open="${file.app}">Open ${escapeHtml(appMeta[file.app][0])}</button>` : "";
-  preview.innerHTML = `<div class="preview-head">
-    ${fileGlyph(file)}
-    <div>
-      <h2>${escapeHtml(file.name)}</h2>
-      <p>${escapeHtml(file.kind)}</p>
-    </div>
-  </div>
-  <p>${escapeHtml(file.detail)}</p>
-  ${file.body ? `<pre>${escapeHtml(file.body)}</pre>` : ""}
-  ${launch}`;
 }
 
 function wireFinder(win, openApp) {
@@ -93,8 +82,6 @@ function wireFinder(win, openApp) {
     if (!fileButton) return;
     win.querySelectorAll("[data-file-index]").forEach(item => item.classList.remove("selected"));
     fileButton.classList.add("selected");
-    const file = folders[win.dataset.folder][Number(fileButton.dataset.fileIndex)];
-    renderPreview(win, file);
   });
   win.addEventListener("dblclick", event => {
     const fileButton = event.target.closest("[data-file-index]");
@@ -106,9 +93,10 @@ function wireFinder(win, openApp) {
 
 function terminal() {
   return `<div class="terminal">
-    <div class="terminal-output">pearOS Terminal
-Type help to get started.</div>
-    <form><span>guest@pearOS %</span><input aria-label="Terminal command" autocomplete="off" spellcheck="false"></form>
+    <div class="terminal-output">pear@pearos ~ $ hello, world! 🍐
+
+pear@pearos ~ $ </div>
+    <form><span>pear@pearos ~ $</span><input aria-label="Terminal command" autocomplete="off" spellcheck="false"></form>
   </div>`;
 }
 
@@ -168,7 +156,7 @@ function wireTerminal(win, openApp) {
     historyAt = terminalHistory.length;
     const response = reply(command, openApp);
     if (response === "clear") output.textContent = "";
-    else output.textContent += `\n\nguest@pearOS % ${command}\n${response}`;
+    else output.textContent += `\n\npear@pearos ~ $ ${command}\n${response}`;
     input.value = "";
     output.scrollTop = output.scrollHeight;
   });
@@ -188,11 +176,11 @@ function wireTerminal(win, openApp) {
 }
 
 function notes() {
-  const note = getValue("pear-note", "pearOS idea: make a small desktop that feels polished but still honest enough for a student project. Keep it static, friendly, and easy to test.");
+  const note = getValue("pear-note", "This is a note that saves locally so you can capture ideas, plans, and to-dos without distractions.");
   return `<div class="note-card">
     <header class="note-header">
-      <div><h2>Notes</h2><p class="help-text">Saved locally in this browser</p></div>
-      <span class="note-count">${note.length} chars</span>
+      <div><h2>Welcome to pearOS</h2><p class="help-text">This is a note that saves locally so you can capture ideas, plans, and to-dos without distractions.</p></div>
+      <span class="note-count">Saved locally</span>
     </header>
     <textarea class="notes-area" aria-label="pearOS note">${escapeHtml(note)}</textarea>
   </div>`;
@@ -203,7 +191,7 @@ function wireNotes(win) {
   const count = win.querySelector(".note-count");
   area.addEventListener("input", event => {
     setValue("pear-note", event.target.value);
-    count.textContent = `${event.target.value.length} chars`;
+    count.textContent = "Saved locally";
   });
 }
 

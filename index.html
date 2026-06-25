@@ -23,29 +23,57 @@
       <button class="menu-item" data-open="about">Help</button>
     </nav>
     <div class="status">
-      <span id="wifi">Wi‑Fi</span>
-      <span id="battery">87%</span>
+      <span class="wifi-icon" aria-label="Wi-Fi"></span>
+      <span id="battery" class="battery-status">Power</span>
       <time id="clock"></time>
     </div>
   </header>
 
   <main id="desktop" class="desktop" aria-label="pearOS desktop">
-    <button class="desktop-icon" data-open="finder">
-      <span class="app-glyph finder-glyph">□</span>
-      <span>Finder</span>
-    </button>
-    <button class="desktop-icon" data-open="terminal">
-      <span class="app-glyph terminal-glyph">>_</span>
-      <span>Terminal</span>
-    </button>
-    <button class="desktop-icon" data-open="devlogs">
-      <span class="app-glyph devlog-glyph">✦</span>
-      <span>Devlogs</span>
-    </button>
-    <button class="desktop-icon" data-open="about">
-      <span class="app-glyph about-glyph">?</span>
-      <span>About</span>
-    </button>
+    <section class="hero-panel" aria-label="pearOS overview">
+      <div class="hero-lockup">
+        <span class="hero-pear" aria-hidden="true"></span>
+        <h1>pearOS</h1>
+      </div>
+      <p class="hero-title">A polished pear-themed web desktop</p>
+      <p class="hero-subtitle">Built with HTML, CSS &amp; JavaScript</p>
+      <div class="feature-row">
+        <article class="feature-card">
+          <span class="feature-icon pear-feature" aria-hidden="true"></span>
+          <strong>Pear-inspired</strong>
+          <span>Soft, friendly visual identity</span>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon grid-feature" aria-hidden="true"></span>
+          <strong>Productive</strong>
+          <span>Apps for notes, terminal &amp; files</span>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon palette-feature" aria-hidden="true"></span>
+          <strong>Customizable</strong>
+          <span>Themes, layout &amp; command palette</span>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon privacy-feature" aria-hidden="true"></span>
+          <strong>Private by design</strong>
+          <span>No tracking. No nonsense.</span>
+        </article>
+      </div>
+    </section>
+
+    <aside class="phone-preview" aria-label="pearOS mobile launcher preview">
+      <div class="phone-status"><span>10:51 PM</span><span>▮▮▮  Wi‑Fi ▰</span></div>
+      <div class="phone-search"><span>⌕</span><span>Search apps...</span><kbd>Esc</kbd></div>
+      <div class="phone-list">
+        <button data-open="finder"><span class="phone-glyph">F</span><strong>Finder</strong><small>Browse pearOS folders and files</small><em>OPEN</em></button>
+        <button data-open="terminal"><span class="phone-glyph">>_</span><strong>Terminal</strong><small>Run the tiny pearOS shell</small><em>OPEN</em></button>
+        <button data-open="notes"><span class="phone-glyph">N</span><strong>Notes</strong><small>Write a note that saves locally</small><em>OPEN</em></button>
+        <button data-open="devlogs"><span class="phone-glyph">D</span><strong>Devlogs</strong><small>Read the three build checkpoints</small><em>OPEN</em></button>
+        <button data-open="settings"><span class="phone-glyph">S</span><strong>Settings</strong><small>Switch themes or reset layout</small><em>OPEN</em></button>
+        <button data-open="about"><span class="phone-glyph">P</span><strong>About pearOS</strong><small>See the project story and checklist</small><em>OPEN</em></button>
+      </div>
+      <div class="phone-help"><kbd>↑</kbd><kbd>↓</kbd><span>move</span><kbd>Enter</kbd><span>open</span></div>
+    </aside>
   </main>
 
   <nav class="dock" aria-label="Dock">
@@ -55,6 +83,7 @@
     <button data-open="devlogs" aria-label="Open Devlogs"><span class="app-glyph devlog-glyph">✦</span></button>
     <button data-open="settings" aria-label="Open Settings"><span class="app-glyph settings-glyph">●</span></button>
     <button data-open="about" aria-label="Open About"><span class="app-glyph about-glyph">?</span></button>
+    <button data-palette aria-label="Open Command Palette"><span class="app-glyph command-glyph">⌘</span></button>
   </nav>
 
   <dialog id="palette" class="palette" aria-labelledby="paletteTitle">

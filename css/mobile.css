@@ -1,18 +1,59 @@
 .window.maximized {
   left: 14px;
-  top: 48px;
+  top: 58px;
   width: calc(100vw - 28px);
-  height: calc(100vh - 146px);
+  height: calc(100vh - 158px);
 }
 
-@media (max-width: 900px) {
-  .finder-shell {
-    grid-template-columns: 132px minmax(210px, 1fr);
+@media (max-width: 1320px) {
+  .hero-panel {
+    width: min(560px, 43vw);
   }
 
-  .file-preview {
-    grid-column: 1 / -1;
-    max-height: 170px;
+  .feature-row {
+    gap: 20px;
+  }
+
+  .feature-icon {
+    width: 86px;
+  }
+
+  .phone-preview {
+    right: 18px;
+    width: 250px;
+  }
+}
+
+@media (max-width: 1080px) {
+  .hero-panel {
+    top: 82px;
+    width: calc(100vw - 56px);
+  }
+
+  .hero-lockup h1 {
+    font-size: clamp(62px, 12vw, 110px);
+  }
+
+  .hero-pear {
+    width: 96px;
+    height: 124px;
+  }
+
+  .phone-preview {
+    display: none;
+  }
+
+  .feature-row {
+    max-width: 620px;
+  }
+
+  .finder-shell {
+    grid-template-columns: 146px minmax(0, 1fr);
+  }
+
+  .files {
+    gap: 22px;
+    padding: 24px;
   }
 
   .about-grid {
@@ -22,47 +63,89 @@
 
 @media (max-width: 760px) {
   .menu-bar {
+    height: 42px;
     gap: 10px;
-    padding: 0 10px;
+    padding: 0 12px;
+    border-radius: 0 0 12px 12px;
+    font-size: 14px;
+  }
+
+  .brand {
+    min-width: 0;
+    font-size: 19px;
   }
 
   .menus,
-  .status span:not(#clock) {
+  .status span:not(#clock),
+  .status .wifi-icon {
     display: none;
   }
 
   #activeApp {
     min-width: 0;
+    font-size: 15px;
   }
 
   .desktop {
-    inset: 36px 0 92px;
-    grid-template-columns: repeat(auto-fill, 76px);
-    gap: 14px 10px;
-    padding: 18px 12px;
+    inset: 42px 0 82px;
+    overflow: auto;
   }
 
-  .desktop-icon {
-    width: 76px;
-    min-height: 80px;
+  .hero-panel {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: auto;
+    padding: 34px 18px 180px;
   }
 
-  .desktop-icon .app-glyph {
-    width: 46px;
-    height: 46px;
+  .hero-lockup {
+    gap: 16px;
+  }
+
+  .hero-lockup h1 {
+    font-size: clamp(54px, 18vw, 82px);
+  }
+
+  .hero-title {
+    font-size: 23px;
+  }
+
+  .hero-subtitle {
+    font-size: 18px;
+  }
+
+  .feature-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 12px;
+    margin-top: 26px;
+  }
+
+  .feature-card strong {
+    font-size: 15px;
+  }
+
+  .feature-card span:last-child {
+    font-size: 14px;
+  }
+
+  .feature-icon {
+    width: 100%;
+    max-width: 116px;
   }
 
   .dock {
     width: calc(100vw - 20px);
     justify-content: space-around;
-    gap: 4px;
+    gap: 5px;
     bottom: 10px;
     padding: 8px 8px 13px;
+    border-radius: 20px;
   }
 
   .dock button {
-    width: 46px;
-    height: 46px;
+    width: 43px;
+    height: 43px;
   }
 
   .window,
@@ -73,7 +156,7 @@
     height: calc(100vh - 136px);
     min-width: 0;
     min-height: 0;
-    border-radius: 12px;
+    border-radius: 14px;
   }
 
   .titlebar {
@@ -84,24 +167,26 @@
     display: none;
   }
 
-  .window-body {
-    padding: 12px;
-  }
-
   .resize-handle {
     display: none;
   }
 
   .finder-shell {
     grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(140px, 1fr) minmax(120px, auto);
+    grid-template-rows: auto minmax(0, 1fr);
   }
 
-  .sidebar {
+  .finder-shell .sidebar {
     display: flex;
     gap: 6px;
     overflow: auto;
+    border-right: 0;
+    border-bottom: 1px solid rgba(91, 103, 65, .14);
     padding: 8px;
+  }
+
+  .sidebar-title {
+    display: none;
   }
 
   .sidebar button {
@@ -110,12 +195,14 @@
     white-space: nowrap;
   }
 
-  .files {
-    grid-template-columns: 1fr;
+  .finder-heading {
+    padding: 17px 16px 12px;
   }
 
-  .file-preview {
-    max-height: 190px;
+  .files {
+    grid-template-columns: repeat(2, minmax(90px, 1fr));
+    gap: 18px;
+    padding: 20px 16px;
   }
 
   .terminal form {
@@ -138,9 +225,18 @@
     display: none;
   }
 
+  .hero-pear {
+    width: 72px;
+    height: 94px;
+  }
+
+  .feature-row {
+    grid-template-columns: 1fr;
+  }
+
   .dock button {
-    width: 42px;
-    height: 42px;
+    width: 39px;
+    height: 39px;
   }
 
   .controls {

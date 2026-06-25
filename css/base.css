@@ -1,55 +1,61 @@
 :root {
-  --accent: #6f9f35;
-  --accent-2: #2e8798;
-  --accent-3: #d39137;
-  --strong: #24481c;
-  --bg1: #f4eddb;
-  --bg2: #cfe2bd;
-  --panel: rgba(255, 252, 243, .88);
-  --solid: #fffdf5;
-  --glass: rgba(255, 255, 255, .66);
-  --text: #20251b;
-  --muted: #65705e;
-  --line: rgba(38, 52, 27, .16);
-  --line-strong: rgba(38, 52, 27, .28);
-  --shadow: 0 22px 64px rgba(42, 52, 32, .25);
-  --shadow-soft: 0 12px 28px rgba(42, 52, 32, .16);
+  --accent: #7aa943;
+  --accent-2: #a8c970;
+  --accent-3: #d6bc6d;
+  --deep: #244b1f;
+  --strong: #345f25;
+  --bg1: #fbf3cf;
+  --bg2: #dbeab4;
+  --bg3: #a8bd82;
+  --panel: rgba(255, 252, 231, .68);
+  --solid: rgba(255, 253, 236, .9);
+  --glass: rgba(255, 253, 237, .78);
+  --text: #253124;
+  --muted: #6d775d;
+  --line: rgba(71, 90, 48, .16);
+  --line-strong: rgba(71, 90, 48, .28);
+  --shadow: 0 28px 70px rgba(71, 88, 43, .28);
+  --shadow-soft: 0 14px 34px rgba(80, 100, 47, .18);
 }
 
 [data-theme="midnight"] {
   --accent: #8ecf67;
-  --accent-2: #63b7cb;
-  --accent-3: #e2a65c;
-  --strong: #e5fac2;
-  --bg1: #0d1511;
-  --bg2: #243a31;
-  --panel: rgba(19, 28, 24, .9);
-  --solid: #16221d;
-  --glass: rgba(18, 27, 23, .74);
+  --accent-2: #b8d981;
+  --accent-3: #e0c67a;
+  --deep: #dff5bf;
+  --strong: #d8f0ba;
+  --bg1: #121a11;
+  --bg2: #283c21;
+  --bg3: #4d6334;
+  --panel: rgba(20, 31, 18, .72);
+  --solid: rgba(24, 35, 20, .92);
+  --glass: rgba(20, 31, 18, .78);
   --text: #f4faea;
-  --muted: #b8c8ad;
+  --muted: #c5d2b4;
   --line: rgba(235, 255, 214, .15);
   --line-strong: rgba(235, 255, 214, .26);
-  --shadow: 0 24px 80px rgba(0, 0, 0, .48);
-  --shadow-soft: 0 14px 34px rgba(0, 0, 0, .35);
+  --shadow: 0 28px 80px rgba(0, 0, 0, .5);
+  --shadow-soft: 0 14px 34px rgba(0, 0, 0, .34);
   color-scheme: dark;
 }
 
 [data-theme="graphite"] {
-  --accent: #a5b66a;
-  --accent-2: #7ca6be;
-  --accent-3: #d0a15e;
-  --strong: #f0f7cf;
-  --bg1: #202126;
-  --bg2: #51575a;
-  --panel: rgba(38, 40, 44, .9);
-  --solid: #303238;
-  --glass: rgba(43, 45, 50, .7);
+  --accent: #a6b96b;
+  --accent-2: #c0cf86;
+  --accent-3: #d6b879;
+  --deep: #eff6d4;
+  --strong: #eef6cf;
+  --bg1: #262820;
+  --bg2: #545c44;
+  --bg3: #7f8b68;
+  --panel: rgba(43, 45, 38, .72);
+  --solid: rgba(49, 51, 44, .92);
+  --glass: rgba(43, 45, 38, .78);
   --text: #f3f3ef;
-  --muted: #c8c9c0;
+  --muted: #cacdbd;
   --line: rgba(255, 255, 255, .14);
   --line-strong: rgba(255, 255, 255, .25);
-  --shadow: 0 24px 80px rgba(0, 0, 0, .48);
+  --shadow: 0 28px 80px rgba(0, 0, 0, .48);
   --shadow-soft: 0 14px 34px rgba(0, 0, 0, .32);
   color-scheme: dark;
 }
@@ -72,6 +78,7 @@ body {
   color: var(--text);
   background: linear-gradient(135deg, var(--bg1), var(--bg2));
   line-height: 1.45;
+  letter-spacing: 0;
   user-select: none;
 }
 
@@ -89,7 +96,7 @@ button {
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--accent-2) 70%, white);
+  outline: 3px solid rgba(92, 132, 45, .5);
   outline-offset: 3px;
 }
 
@@ -98,34 +105,71 @@ textarea:focus-visible {
   inset: 0;
   overflow: hidden;
   background:
-    linear-gradient(122deg, rgba(255, 246, 220, .86), rgba(255, 246, 220, 0) 42%),
-    linear-gradient(145deg, color-mix(in srgb, var(--bg1) 72%, white), color-mix(in srgb, var(--accent) 24%, var(--bg2)) 52%, color-mix(in srgb, var(--accent-2) 22%, var(--bg2))),
-    linear-gradient(24deg, rgba(211, 145, 55, .22), transparent 38%);
+    radial-gradient(circle at 28% 18%, rgba(255, 255, 242, .9), transparent 18rem),
+    radial-gradient(circle at 56% 12%, rgba(255, 242, 167, .72), transparent 22rem),
+    radial-gradient(circle at 42% 76%, rgba(251, 243, 190, .55), transparent 26rem),
+    linear-gradient(115deg, #fff6cc 0%, #edf2bd 44%, #b7ca91 100%);
 }
 
-.wallpaper::before {
-  content: "";
-  position: absolute;
-  right: clamp(24px, 8vw, 120px);
-  top: clamp(72px, 14vh, 140px);
-  width: clamp(240px, 34vw, 480px);
-  aspect-ratio: .82;
-  border-radius: 58% 42% 54% 46% / 42% 44% 58% 62%;
-  background:
-    linear-gradient(145deg, color-mix(in srgb, var(--accent) 48%, white), color-mix(in srgb, var(--accent-2) 30%, transparent)),
-    var(--accent);
-  opacity: .18;
-  transform: rotate(-9deg);
-}
-
+.wallpaper::before,
 .wallpaper::after {
   content: "";
   position: absolute;
+  border-radius: 58% 42% 54% 46% / 42% 44% 58% 62%;
+  background:
+    radial-gradient(circle at 38% 28%, rgba(255, 255, 235, .68), transparent 30%),
+    linear-gradient(145deg, rgba(206, 228, 124, .86), rgba(67, 103, 35, .9));
+  filter: blur(.2px);
+  opacity: .76;
+}
+
+.wallpaper::before {
+  right: -5vw;
+  top: 8vh;
+  width: 22vw;
+  min-width: 220px;
+  max-width: 390px;
+  aspect-ratio: .82;
+  transform: rotate(-8deg);
+  box-shadow: inset -24px -38px 42px rgba(48, 76, 25, .2);
+}
+
+.wallpaper::after {
+  left: -7vw;
+  bottom: -14vh;
+  width: 24vw;
+  min-width: 250px;
+  max-width: 420px;
+  aspect-ratio: .78;
+  transform: rotate(14deg);
+  box-shadow: inset -24px -38px 42px rgba(48, 76, 25, .22);
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::before {
+  right: 5.5vw;
+  top: 9vh;
+  width: 6vw;
+  min-width: 64px;
+  height: 9vw;
+  min-height: 94px;
+  border-radius: 80% 20% 80% 20%;
+  background: linear-gradient(145deg, rgba(143, 178, 75, .72), rgba(55, 91, 35, .72));
+  transform: rotate(38deg);
+}
+
+body::after {
   inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, .12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, .1) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: linear-gradient(to bottom, transparent, black 18%, black 72%, transparent);
-  opacity: .35;
+  background:
+    radial-gradient(circle, rgba(255, 255, 245, .52) 0 2px, transparent 3px) 19% 11% / 240px 210px,
+    radial-gradient(circle at 82% 78%, rgba(53, 80, 33, .2), transparent 16rem),
+    repeating-radial-gradient(circle at 58% 28%, transparent 0 180px, rgba(72, 94, 45, .09) 181px 183px, transparent 184px 260px);
+  opacity: .78;
 }

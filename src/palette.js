@@ -63,4 +63,7 @@ function initPalette(openApp) {
       open();
     }
   });
+  document.querySelectorAll("[data-palette]").forEach(button => {
+    button.addEventListener("click", open);
+  });
 }
