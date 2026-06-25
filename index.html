@@ -61,17 +61,11 @@
       </div>
     </section>
 
-    <aside class="phone-preview" aria-label="pearOS mobile launcher preview">
+    <aside id="appRunner" class="phone-preview" aria-label="pearOS application runner">
+      <button class="runner-close" type="button" data-close-runner aria-label="Close application runner">×</button>
       <div class="phone-status"><span>10:51 PM</span><span>▮▮▮  Wi‑Fi ▰</span></div>
       <div class="phone-search"><span>⌕</span><span>Search apps...</span><kbd>Esc</kbd></div>
-      <div class="phone-list">
-        <button data-open="finder"><span class="phone-glyph">F</span><strong>Finder</strong><small>Browse pearOS folders and files</small><em>OPEN</em></button>
-        <button data-open="terminal"><span class="phone-glyph">>_</span><strong>Terminal</strong><small>Run the tiny pearOS shell</small><em>OPEN</em></button>
-        <button data-open="notes"><span class="phone-glyph">N</span><strong>Notes</strong><small>Write a note that saves locally</small><em>OPEN</em></button>
-        <button data-open="devlogs"><span class="phone-glyph">D</span><strong>Devlogs</strong><small>Read the three build checkpoints</small><em>OPEN</em></button>
-        <button data-open="settings"><span class="phone-glyph">S</span><strong>Settings</strong><small>Switch themes or reset layout</small><em>OPEN</em></button>
-        <button data-open="about"><span class="phone-glyph">P</span><strong>About pearOS</strong><small>See the project story and checklist</small><em>OPEN</em></button>
-      </div>
+      <div id="runnerList" class="phone-list"></div>
       <div class="phone-help"><kbd>↑</kbd><kbd>↓</kbd><span>move</span><kbd>Enter</kbd><span>open</span></div>
     </aside>
   </main>
@@ -83,7 +77,7 @@
     <button data-open="devlogs" aria-label="Open Devlogs"><span class="app-glyph devlog-glyph">✦</span></button>
     <button data-open="settings" aria-label="Open Settings"><span class="app-glyph settings-glyph">●</span></button>
     <button data-open="about" aria-label="Open About"><span class="app-glyph about-glyph">?</span></button>
-    <button data-palette aria-label="Open Command Palette"><span class="app-glyph command-glyph">⌘</span></button>
+    <button data-show-runner aria-label="Open Application Runner"><span class="app-glyph command-glyph">⌘</span></button>
   </nav>
 
   <dialog id="palette" class="palette" aria-labelledby="paletteTitle">

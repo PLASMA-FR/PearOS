@@ -319,6 +319,278 @@
   user-select: text;
 }
 
+.calculator-app {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 92px 1fr;
+  gap: 12px;
+  padding: 16px;
+  background:
+    radial-gradient(circle at 80% 12%, rgba(176, 205, 108, .28), transparent 10rem),
+    rgba(255, 253, 236, .35);
+}
+
+.calc-display {
+  display: flex;
+  align-items: end;
+  justify-content: flex-end;
+  overflow: hidden;
+  border: 1px solid rgba(87, 105, 55, .16);
+  border-radius: 14px;
+  background: rgba(255, 255, 239, .7);
+  padding: 14px;
+  color: #2f4028;
+  font-size: 32px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calc-keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.calc-keys button,
+.pairs-grid button {
+  border: 1px solid rgba(87, 105, 55, .16);
+  border-radius: 12px;
+  background: rgba(255, 255, 239, .58);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6);
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.calc-keys button:hover,
+.pairs-grid button:hover {
+  background: rgba(209, 228, 151, .48);
+}
+
+.calc-equals {
+  background: linear-gradient(145deg, #98bc5d, #557f32) !important;
+  color: #f8ffe4;
+}
+
+.sketch-app {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+  padding: 14px;
+}
+
+.sketch-tools {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.swatch {
+  width: 30px;
+  height: 30px;
+  border: 2px solid rgba(255, 255, 255, .68);
+  border-radius: 50%;
+  box-shadow: 0 6px 14px rgba(58, 74, 36, .15);
+  cursor: pointer;
+}
+
+.swatch.active {
+  outline: 3px solid rgba(116, 155, 69, .34);
+}
+
+.sketch-canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  border: 1px solid rgba(87, 105, 55, .15);
+  border-radius: 14px;
+  background:
+    linear-gradient(rgba(112, 136, 70, .07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(112, 136, 70, .07) 1px, transparent 1px),
+    rgba(255, 255, 239, .7);
+  background-size: 24px 24px;
+  touch-action: none;
+}
+
+.game-app,
+.pairs-app {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 14px;
+}
+
+.game-app header,
+.pairs-app header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #2f4028;
+}
+
+.catch-field {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(87, 105, 55, .15);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(251, 243, 190, .52), transparent 9rem),
+    linear-gradient(145deg, rgba(231, 242, 181, .76), rgba(173, 197, 129, .68));
+}
+
+.catch-pear {
+  position: absolute;
+  width: 52px;
+  height: 66px;
+  border: 0;
+  border-radius: 58% 42% 54% 46% / 42% 44% 58% 62%;
+  background:
+    radial-gradient(circle at 34% 25%, rgba(255, 255, 230, .66), transparent 31%),
+    linear-gradient(145deg, #b9dc68, #4d852d);
+  box-shadow: inset -7px -11px 18px rgba(39, 73, 18, .25), 0 11px 22px rgba(54, 89, 25, .22);
+  cursor: pointer;
+}
+
+.catch-pear::before,
+.catch-pear::after {
+  content: "";
+  position: absolute;
+}
+
+.catch-pear::before {
+  top: -12px;
+  left: 25px;
+  width: 8px;
+  height: 20px;
+  border-radius: 999px;
+  background: #3e6824;
+  transform: rotate(12deg);
+}
+
+.catch-pear::after {
+  top: -13px;
+  left: 32px;
+  width: 24px;
+  height: 12px;
+  border-radius: 100% 0 100% 0;
+  background: #5d9638;
+  transform: rotate(-20deg);
+}
+
+.pairs-app {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.pairs-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pairs-grid button {
+  min-height: 74px;
+  background: linear-gradient(145deg, rgba(139, 179, 82, .92), rgba(76, 122, 47, .92));
+  color: transparent;
+  font-size: 26px;
+}
+
+.pairs-grid button span {
+  opacity: 0;
+}
+
+.pairs-grid button.open,
+.pairs-grid button.matched {
+  background: rgba(255, 255, 239, .72);
+  color: #2f4028;
+}
+
+.pairs-grid button.open span,
+.pairs-grid button.matched span {
+  opacity: 1;
+}
+
+[data-theme="midnight"] .finder-shell .sidebar,
+[data-theme="graphite"] .finder-shell .sidebar,
+[data-theme="midnight"] .finder-heading,
+[data-theme="graphite"] .finder-heading {
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--solid) 82%, transparent);
+}
+
+[data-theme="midnight"] .finder-heading h2,
+[data-theme="graphite"] .finder-heading h2,
+[data-theme="midnight"] .file-button strong,
+[data-theme="graphite"] .file-button strong,
+[data-theme="midnight"] .note-header h2,
+[data-theme="graphite"] .note-header h2,
+[data-theme="midnight"] .game-app header,
+[data-theme="graphite"] .game-app header,
+[data-theme="midnight"] .pairs-app header,
+[data-theme="graphite"] .pairs-app header,
+[data-theme="midnight"] .calc-display,
+[data-theme="graphite"] .calc-display {
+  color: var(--text);
+}
+
+[data-theme="midnight"] .sidebar-title,
+[data-theme="graphite"] .sidebar-title,
+[data-theme="midnight"] .sidebar button,
+[data-theme="graphite"] .sidebar button,
+[data-theme="midnight"] .finder-heading small,
+[data-theme="graphite"] .finder-heading small,
+[data-theme="midnight"] .finder-count,
+[data-theme="graphite"] .finder-count,
+[data-theme="midnight"] .note-header p,
+[data-theme="graphite"] .note-header p,
+[data-theme="midnight"] .note-count,
+[data-theme="graphite"] .note-count,
+[data-theme="midnight"] .file-button small,
+[data-theme="graphite"] .file-button small,
+[data-theme="midnight"] .card span,
+[data-theme="graphite"] .card span,
+[data-theme="midnight"] .theme-button span,
+[data-theme="graphite"] .theme-button span,
+[data-theme="midnight"] .help-text,
+[data-theme="graphite"] .help-text,
+[data-theme="midnight"] .about-grid span,
+[data-theme="graphite"] .about-grid span,
+[data-theme="midnight"] .devlog-text p,
+[data-theme="graphite"] .devlog-text p,
+[data-theme="midnight"] .about-app p,
+[data-theme="graphite"] .about-app p {
+  color: var(--muted);
+}
+
+[data-theme="midnight"] .calc-display,
+[data-theme="midnight"] .calc-keys button,
+[data-theme="midnight"] .pairs-grid button,
+[data-theme="midnight"] .sketch-canvas,
+[data-theme="midnight"] .catch-field,
+[data-theme="graphite"] .calc-display,
+[data-theme="graphite"] .calc-keys button,
+[data-theme="graphite"] .pairs-grid button,
+[data-theme="graphite"] .sketch-canvas,
+[data-theme="graphite"] .catch-field {
+  border-color: var(--line);
+  background: var(--panel);
+}
+
+[data-theme="midnight"] .notes-area,
+[data-theme="graphite"] .notes-area {
+  color: var(--text);
+}
+
+[data-theme="midnight"] .pairs-grid button.open,
+[data-theme="midnight"] .pairs-grid button.matched,
+[data-theme="graphite"] .pairs-grid button.open,
+[data-theme="graphite"] .pairs-grid button.matched {
+  background: var(--solid);
+  color: var(--text);
+}
+
 .tabs {
   display: flex;
   gap: 8px;

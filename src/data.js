@@ -19,6 +19,18 @@ const folders = {
       app: "notes"
     },
     {
+      name: "Calculator",
+      kind: "Application",
+      detail: "A tiny pear-green calculator for quick math.",
+      app: "calculator"
+    },
+    {
+      name: "Sketch",
+      kind: "Application",
+      detail: "Draw quick pearOS doodles on a local canvas.",
+      app: "sketch"
+    },
+    {
       name: "Devlogs",
       kind: "Application",
       detail: "Read the build journal from inside the desktop.",
@@ -35,6 +47,20 @@ const folders = {
       kind: "Application",
       detail: "Project identity and checklist.",
       app: "about"
+    }
+  ],
+  Games: [
+    {
+      name: "Pear Catch",
+      kind: "Game",
+      detail: "Click the drifting pear before the timer runs out.",
+      app: "pearcatch"
+    },
+    {
+      name: "Pear Pairs",
+      kind: "Game",
+      detail: "Match pearOS cards with a soft desktop theme.",
+      app: "pairs"
     }
   ],
   Documents: [
@@ -132,6 +158,10 @@ const appMeta = {
   finder: ["Finder", "□", "finder-glyph", 635, 440, "Files and apps"],
   terminal: ["Terminal", ">_", "terminal-glyph", 260, 420, "Command shell"],
   notes: ["Notes", "✎", "notes-glyph", 365, 270, "Local note"],
+  calculator: ["Calculator", "+", "calc-glyph", 360, 470, "Quick math"],
+  sketch: ["Sketch", "✎", "sketch-glyph", 620, 480, "Canvas"],
+  pearcatch: ["Pear Catch", "●", "game-glyph", 440, 460, "Arcade game"],
+  pairs: ["Pear Pairs", "▦", "pairs-glyph", 520, 430, "Memory game"],
   devlogs: ["Devlogs", "✦", "devlog-glyph", 640, 440, "Build journal"],
   settings: ["Settings", "●", "settings-glyph", 540, 360, "Desktop controls"],
   about: ["About pearOS", "P", "about-glyph", 580, 440, "Project info"]

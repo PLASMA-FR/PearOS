@@ -151,3 +151,37 @@
 .window[data-app="notes"] .window-body {
   padding: 8px;
 }
+
+[data-theme="midnight"] .window,
+[data-theme="graphite"] .window,
+[data-theme="midnight"] .titlebar,
+[data-theme="graphite"] .titlebar,
+[data-theme="midnight"] .window-body,
+[data-theme="graphite"] .window-body {
+  border-color: var(--line);
+  background: var(--solid);
+  color: var(--text);
+}
+
+[data-theme="midnight"] .title,
+[data-theme="graphite"] .title,
+[data-theme="midnight"] .window .small,
+[data-theme="graphite"] .window .small {
+  color: var(--text);
+}
+
+[data-theme="midnight"] .sidebar,
+[data-theme="midnight"] .card,
+[data-theme="midnight"] .note-card,
+[data-theme="midnight"] .palette-box,
+[data-theme="midnight"] .settings-section,
+[data-theme="midnight"] .about-grid > div,
+[data-theme="graphite"] .sidebar,
+[data-theme="graphite"] .card,
+[data-theme="graphite"] .note-card,
+[data-theme="graphite"] .palette-box,
+[data-theme="graphite"] .settings-section,
+[data-theme="graphite"] .about-grid > div {
+  border-color: var(--line);
+  background: var(--panel);
+}

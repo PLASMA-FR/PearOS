@@ -5,6 +5,10 @@ function renderApp(id) {
   if (id === "finder") return finder();
   if (id === "terminal") return terminal();
   if (id === "notes") return notes();
+  if (id === "calculator") return calculator();
+  if (id === "sketch") return sketch();
+  if (id === "pearcatch") return pearCatch();
+  if (id === "pairs") return pairs();
   if (id === "devlogs") return devlogs();
   if (id === "settings") return settings();
   return about();
@@ -14,6 +18,10 @@ function wireApp(win, id, openApp) {
   if (id === "finder") wireFinder(win, openApp);
   if (id === "terminal") wireTerminal(win, openApp);
   if (id === "notes") wireNotes(win);
+  if (id === "calculator") wireCalculator(win);
+  if (id === "sketch") wireSketch(win);
+  if (id === "pearcatch") wirePearCatch(win);
+  if (id === "pairs") wirePairs(win);
   if (id === "devlogs") wireLogs(win);
   if (id === "settings") wireSettings(win);
 }
@@ -100,6 +108,11 @@ pear@pearos ~ $ </div>
   </div>`;
 }
 
+function appIdFromText(value) {
+  const normalized = value.replace(/\s+/g, "");
+  return Object.keys(appMeta).find(id => id === normalized || appMeta[id][0].toLowerCase().replace(/\s+/g, "") === normalized);
+}
+
 function reply(command, openApp) {
   const value = command.trim().toLowerCase();
   if (!value) return "";
@@ -107,7 +120,7 @@ function reply(command, openApp) {
     return [
       "help                 show commands",
       "apps                 list apps",
-      "open notes           open an app",
+      "open calculator      open an app",
       "theme midnight       switch theme",
       "reset layout         restore window positions",
       "date                 show local date",
@@ -134,12 +147,12 @@ function reply(command, openApp) {
     return `No theme named ${theme}.`;
   }
   if (value.startsWith("open ")) {
-    const id = value.replace("open ", "").trim();
+    const id = appIdFromText(value.replace("open ", "").trim());
     if (appMeta[id]) {
       openApp(id);
       return `Opened ${appMeta[id][0]}.`;
     }
-    return `No app named ${id}.`;
+    return `No app named ${value.replace("open ", "").trim()}.`;
   }
   return `${command}: command not found. Try help.`;
 }
@@ -192,6 +205,208 @@ function wireNotes(win) {
   area.addEventListener("input", event => {
     setValue("pear-note", event.target.value);
     count.textContent = "Saved locally";
+  });
+}
+
+function calculator() {
+  const keys = ["7", "8", "9", "/", "4", "5", "6", "*", "1", "2", "3", "-", "0", ".", "=", "+"];
+  return `<div class="calculator-app">
+    <output class="calc-display" aria-live="polite">0</output>
+    <div class="calc-keys">
+      <button data-calc="clear">C</button>
+      <button data-calc="back">⌫</button>
+      <button data-calc="(">(</button>
+      <button data-calc=")">)</button>
+      ${keys.map(key => `<button data-calc="${key}" class="${key === "=" ? "calc-equals" : ""}">${key}</button>`).join("")}
+    </div>
+  </div>`;
+}
+
+function wireCalculator(win) {
+  const display = win.querySelector(".calc-display");
+  let expression = "";
+  const render = () => {
+    display.textContent = expression || "0";
+  };
+  win.addEventListener("click", event => {
+    const button = event.target.closest("[data-calc]");
+    if (!button) return;
+    const value = button.dataset.calc;
+    if (value === "clear") expression = "";
+    else if (value === "back") expression = expression.slice(0, -1);
+    else if (value === "=") {
+      try {
+        if (!/^[\d+\-*/().\s]+$/.test(expression)) throw new Error("bad expression");
+        const result = Function(`"use strict"; return (${expression})`)();
+        expression = Number.isFinite(result) ? String(Math.round(result * 1000000) / 1000000) : "Error";
+      } catch {
+        expression = "Error";
+      }
+    } else {
+      expression = expression === "Error" ? value : `${expression}${value}`;
+    }
+    render();
+  });
+}
+
+function sketch() {
+  return `<div class="sketch-app">
+    <div class="sketch-tools">
+      <button class="swatch active" data-color="#3f6f27" style="background:#3f6f27" aria-label="Green ink"></button>
+      <button class="swatch" data-color="#d2a348" style="background:#d2a348" aria-label="Gold ink"></button>
+      <button class="swatch" data-color="#24352a" style="background:#24352a" aria-label="Dark ink"></button>
+      <button class="secondary-action" data-clear-sketch>Clear</button>
+    </div>
+    <canvas class="sketch-canvas" aria-label="Sketch canvas"></canvas>
+  </div>`;
+}
+
+function wireSketch(win) {
+  const canvas = win.querySelector(".sketch-canvas");
+  const context = canvas.getContext("2d");
+  let color = "#3f6f27";
+  let drawing = false;
+  let last = null;
+
+  const resize = () => {
+    const rect = canvas.getBoundingClientRect();
+    const ratio = devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.floor(rect.width * ratio));
+    canvas.height = Math.max(1, Math.floor(rect.height * ratio));
+    context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    context.lineCap = "round";
+    context.lineJoin = "round";
+    context.lineWidth = 5;
+  };
+  const point = event => {
+    const rect = canvas.getBoundingClientRect();
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  };
+  const draw = event => {
+    if (!drawing) return;
+    const next = point(event);
+    context.strokeStyle = color;
+    context.beginPath();
+    context.moveTo(last.x, last.y);
+    context.lineTo(next.x, next.y);
+    context.stroke();
+    last = next;
+  };
+
+  resize();
+  setTimeout(resize, 60);
+  canvas.addEventListener("pointerdown", event => {
+    drawing = true;
+    last = point(event);
+    canvas.setPointerCapture(event.pointerId);
+  });
+  canvas.addEventListener("pointermove", draw);
+  canvas.addEventListener("pointerup", event => {
+    drawing = false;
+    if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+  });
+  canvas.addEventListener("pointercancel", () => {
+    drawing = false;
+  });
+  win.querySelectorAll("[data-color]").forEach(button => {
+    button.addEventListener("click", () => {
+      color = button.dataset.color;
+      win.querySelectorAll("[data-color]").forEach(item => item.classList.remove("active"));
+      button.classList.add("active");
+    });
+  });
+  win.querySelector("[data-clear-sketch]").addEventListener("click", () => context.clearRect(0, 0, canvas.width, canvas.height));
+}
+
+function pearCatch() {
+  return `<div class="game-app pear-catch">
+    <header><strong>Score <span data-score>0</span></strong><strong>Time <span data-time>30</span>s</strong></header>
+    <div class="catch-field">
+      <button class="catch-pear" data-catch aria-label="Catch pear"></button>
+    </div>
+    <button class="primary-action" data-start-catch>Start</button>
+  </div>`;
+}
+
+function wirePearCatch(win) {
+  const field = win.querySelector(".catch-field");
+  const pear = win.querySelector("[data-catch]");
+  const scoreText = win.querySelector("[data-score]");
+  const timeText = win.querySelector("[data-time]");
+  let score = 0;
+  let time = 30;
+  let timer = null;
+
+  const movePear = () => {
+    const maxX = Math.max(10, field.clientWidth - pear.offsetWidth - 10);
+    const maxY = Math.max(10, field.clientHeight - pear.offsetHeight - 10);
+    pear.style.left = `${10 + Math.random() * (maxX - 10)}px`;
+    pear.style.top = `${10 + Math.random() * (maxY - 10)}px`;
+  };
+  const stop = () => {
+    clearInterval(timer);
+    timer = null;
+  };
+  win.querySelector("[data-start-catch]").addEventListener("click", () => {
+    score = 0;
+    time = 30;
+    scoreText.textContent = score;
+    timeText.textContent = time;
+    movePear();
+    stop();
+    timer = setInterval(() => {
+      if (!document.body.contains(win)) return stop();
+      time -= 1;
+      timeText.textContent = time;
+      if (time <= 0) stop();
+    }, 1000);
+  });
+  pear.addEventListener("click", () => {
+    if (!timer) return;
+    score += 1;
+    scoreText.textContent = score;
+    movePear();
+  });
+  movePear();
+}
+
+function pairs() {
+  const symbols = ["🍐", "⌘", "✎", ">_", "🍐", "⌘", "✎", ">_"]
+    .sort(() => Math.random() - .5);
+  return `<div class="pairs-app">
+    <header><strong>Pear Pairs</strong><span data-pairs-status>Find every match</span></header>
+    <div class="pairs-grid">
+      ${symbols.map((symbol, index) => `<button data-card="${index}" data-symbol="${symbol}" aria-label="Hidden card"><span>${symbol}</span></button>`).join("")}
+    </div>
+  </div>`;
+}
+
+function wirePairs(win) {
+  const status = win.querySelector("[data-pairs-status]");
+  let open = [];
+  let matched = 0;
+  win.addEventListener("click", event => {
+    const card = event.target.closest("[data-card]");
+    if (!card || card.classList.contains("open") || card.classList.contains("matched") || open.length === 2) return;
+    card.classList.add("open");
+    open.push(card);
+    if (open.length !== 2) return;
+    const [first, second] = open;
+    if (first.dataset.symbol === second.dataset.symbol) {
+      first.classList.add("matched");
+      second.classList.add("matched");
+      matched += 2;
+      open = [];
+      status.textContent = matched === 8 ? "All matched" : `${matched / 2} matches`;
+      return;
+    }
+    status.textContent = "Try again";
+    setTimeout(() => {
+      first.classList.remove("open");
+      second.classList.remove("open");
+      open = [];
+      status.textContent = `${matched / 2} matches`;
+    }, 700);
   });
 }
 

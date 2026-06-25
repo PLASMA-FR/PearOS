@@ -40,7 +40,12 @@
   }
 
   .phone-preview {
-    display: none;
+    position: fixed;
+    top: 66px;
+    right: 16px;
+    width: min(290px, calc(100vw - 32px));
+    min-height: 0;
+    max-height: calc(100vh - 162px);
   }
 
   .feature-row {
@@ -89,6 +94,13 @@
   .desktop {
     inset: 42px 0 82px;
     overflow: auto;
+  }
+
+  .phone-preview {
+    top: 52px;
+    right: 10px;
+    width: calc(100vw - 20px);
+    max-height: calc(100vh - 136px);
   }
 
   .hero-panel {
