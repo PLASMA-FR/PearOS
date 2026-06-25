@@ -11,7 +11,7 @@ function matches() {
 function renderPalette() {
   const items = matches();
   if (selected >= items.length) selected = Math.max(0, items.length - 1);
-  results.innerHTML = items.map(([id, app], index) => `<button type="button" class="palette-result ${index === selected ? "selected" : ""}" role="option" data-open="${id}"><span class="app-glyph ${app[2]}">${app[1]}</span><strong>${app[0]}</strong></button>`).join("") || `<div class="palette-result selected">No apps found</div>`;
+  results.innerHTML = items.map(([id, app], index) => `<button type="button" class="palette-result ${index === selected ? "selected" : ""}" role="option" aria-selected="${index === selected ? "true" : "false"}" data-open="${id}"><span class="app-glyph ${app[2]}">${app[1]}</span><strong>${app[0]}</strong></button>`).join("") || `<div class="palette-result selected" role="option" aria-selected="true">No apps found</div>`;
 }
 
 function isTyping(target) {

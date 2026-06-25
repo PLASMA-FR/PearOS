@@ -16,11 +16,11 @@
     </div>
     <span id="activeApp">Desktop</span>
     <nav class="menus" aria-label="Application menu">
-      <span>File</span>
-      <span>Edit</span>
-      <span>View</span>
-      <span>Window</span>
-      <span>Help</span>
+      <button class="menu-item" data-open="finder">File</button>
+      <button class="menu-item" data-open="notes">Edit</button>
+      <button class="menu-item" data-open="settings">View</button>
+      <button class="menu-item" data-open="devlogs">Window</button>
+      <button class="menu-item" data-open="about">Help</button>
     </nav>
     <div class="status">
       <span id="wifi">Wi‑Fi</span>
@@ -35,7 +35,7 @@
       <span>Finder</span>
     </button>
     <button class="desktop-icon" data-open="terminal">
-      <span class="app-glyph terminal-glyph">›_</span>
+      <span class="app-glyph terminal-glyph">>_</span>
       <span>Terminal</span>
     </button>
     <button class="desktop-icon" data-open="devlogs">
@@ -50,7 +50,7 @@
 
   <nav class="dock" aria-label="Dock">
     <button data-open="finder" aria-label="Open Finder"><span class="app-glyph finder-glyph">□</span></button>
-    <button data-open="terminal" aria-label="Open Terminal"><span class="app-glyph terminal-glyph">›_</span></button>
+    <button data-open="terminal" aria-label="Open Terminal"><span class="app-glyph terminal-glyph">>_</span></button>
     <button data-open="notes" aria-label="Open Notes"><span class="app-glyph notes-glyph">✎</span></button>
     <button data-open="devlogs" aria-label="Open Devlogs"><span class="app-glyph devlog-glyph">✦</span></button>
     <button data-open="settings" aria-label="Open Settings"><span class="app-glyph settings-glyph">●</span></button>
@@ -62,16 +62,15 @@
       <h2 id="paletteTitle">Command Palette</h2>
       <input id="paletteInput" autocomplete="off" spellcheck="false" placeholder="Open an app...">
       <div id="paletteResults" class="palette-results" role="listbox"></div>
-      <p>Ctrl K / Command K to open. Enter launches. Escape closes.</p>
     </form>
   </dialog>
 
   <script src="src/storage.js"></script>
-    <script src="src/data.js"></script>
-    <script src="src/theme.js"></script>
-    <script src="src/apps.js"></script>
-    <script src="src/windows.js"></script>
-    <script src="src/palette.js"></script>
-    <script src="script.js"></script>
+  <script src="src/data.js"></script>
+  <script src="src/theme.js"></script>
+  <script src="src/apps.js"></script>
+  <script src="src/windows.js"></script>
+  <script src="src/palette.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

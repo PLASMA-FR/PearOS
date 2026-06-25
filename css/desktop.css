@@ -5,63 +5,199 @@
   height: 36px;
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 0 16px;
+  gap: 16px;
+  padding: 0 14px;
   background: var(--glass);
   border-bottom: 1px solid var(--line);
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px) saturate(1.25);
   font-size: 13px;
 }
-.brand, .status, .menus { display: flex; align-items: center; gap: 12px; }
-.brand { gap: 8px; }
-.menus { flex: 1; }
-.status, #activeApp { color: var(--muted); }
-#activeApp { min-width: 74px; font-weight: 700; }
+
+.brand,
+.status,
+.menus {
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  gap: 8px;
+  font-weight: 800;
+}
+
+.menus {
+  flex: 1;
+  gap: 4px;
+  min-width: 0;
+}
+
+.status {
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.status,
+#activeApp {
+  color: var(--muted);
+}
+
+#activeApp {
+  min-width: 76px;
+  font-weight: 750;
+}
+
+.menu-item {
+  height: 26px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  padding: 0 9px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.menu-item:hover,
+.menu-item:focus-visible {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
 .pear-mark {
   position: relative;
   width: 18px;
   height: 22px;
+  flex: 0 0 auto;
   border-radius: 58% 42% 54% 46% / 42% 44% 58% 62%;
-  background: linear-gradient(145deg, #b9e071, var(--accent));
-  box-shadow: inset -3px -5px 10px rgba(32,75,20,.24);
+  background: linear-gradient(145deg, #bedf74, var(--accent));
+  box-shadow: inset -3px -5px 10px rgba(32, 75, 20, .24);
   transform: rotate(-10deg);
 }
-.pear-mark::before, .pear-mark::after { content: ""; position: absolute; }
-.pear-mark::before { top: -5px; left: 9px; width: 4px; height: 9px; border-radius: 3px; background: #6a4a27; transform: rotate(24deg); }
-.pear-mark::after { top: -6px; left: 12px; width: 10px; height: 6px; border-radius: 100% 0 100% 0; background: #7fbf55; transform: rotate(-16deg); }
-.desktop { position: fixed; inset: 36px 0 88px; padding: 26px; }
+
+.pear-mark::before,
+.pear-mark::after {
+  content: "";
+  position: absolute;
+}
+
+.pear-mark::before {
+  top: -5px;
+  left: 9px;
+  width: 4px;
+  height: 9px;
+  border-radius: 3px;
+  background: #6a4a27;
+  transform: rotate(24deg);
+}
+
+.pear-mark::after {
+  top: -6px;
+  left: 12px;
+  width: 10px;
+  height: 6px;
+  border-radius: 100% 0 100% 0;
+  background: #76ad4c;
+  transform: rotate(-16deg);
+}
+
+.desktop {
+  position: fixed;
+  inset: 36px 0 92px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 86px);
+  grid-auto-rows: min-content;
+  align-content: start;
+  gap: 18px 20px;
+  padding: 28px;
+}
+
 .desktop-icon {
   width: 86px;
-  margin: 0 22px 20px 0;
+  min-height: 86px;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  border: 0;
-  border-radius: 18px;
+  border: 1px solid transparent;
+  border-radius: 8px;
   background: transparent;
   cursor: pointer;
-  padding: 10px 6px;
-  text-shadow: 0 1px 9px rgba(255,255,255,.8);
+  padding: 8px 5px;
+  color: var(--text);
 }
-.desktop-icon:hover { background: rgba(255,255,255,.2); }
-.app-glyph {
-  width: 48px;
-  height: 48px;
-  border-radius: 16px;
+
+.desktop-icon span:last-child {
+  max-width: 100%;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, .38);
+  padding: 2px 7px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 8px rgba(255, 255, 255, .76);
+  white-space: nowrap;
+}
+
+[data-theme="midnight"] .desktop-icon span:last-child,
+[data-theme="graphite"] .desktop-icon span:last-child {
+  background: rgba(10, 16, 12, .38);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, .76);
+}
+
+.desktop-icon:hover {
+  border-color: rgba(255, 255, 255, .48);
+  background: rgba(255, 255, 255, .2);
+}
+
+.app-glyph,
+.doc-glyph {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
   display: grid;
   place-items: center;
-  background: linear-gradient(145deg, var(--solid), var(--accent));
-  border: 1px solid rgba(255,255,255,.58);
-  box-shadow: 0 12px 28px rgba(20,35,12,.18);
+  border: 1px solid rgba(255, 255, 255, .62);
+  box-shadow: var(--shadow-soft);
   color: var(--strong);
   font-weight: 900;
+  line-height: 1;
 }
-.terminal-glyph { background: linear-gradient(145deg, #172313, #314f24); color: #dff8b8; font-family: ui-monospace, Menlo, monospace; }
-.notes-glyph { background: linear-gradient(145deg, #fff2b8, #d4ee91); }
-.devlog-glyph { background: linear-gradient(145deg, #eff8de, #9bc65e); }
-.settings-glyph { background: linear-gradient(145deg, #e3e6df, #8ea17e); }
-.about-glyph { background: linear-gradient(145deg, #fff, #cae89b); }
+
+.app-glyph {
+  background: linear-gradient(145deg, var(--solid), var(--accent));
+}
+
+.doc-glyph {
+  background: linear-gradient(145deg, #ffffff, color-mix(in srgb, var(--accent-2) 38%, white));
+  color: #234a56;
+  font-size: 12px;
+}
+
+.finder-glyph {
+  background: linear-gradient(145deg, #ffffff, #9bd09b 48%, #5aa1b0);
+}
+
+.terminal-glyph {
+  background: linear-gradient(145deg, #10180f, #314f24);
+  color: #dff8b8;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+
+.notes-glyph {
+  background: linear-gradient(145deg, #fff3bc, #e0bf58);
+  color: #594315;
+}
+
+.devlog-glyph {
+  background: linear-gradient(145deg, #f8f3ff, #91b9d9);
+  color: #264b67;
+}
+
+.settings-glyph {
+  background: linear-gradient(145deg, #ecefed, #8ea17e);
+}
+
+.about-glyph {
+  background: linear-gradient(145deg, #ffffff, #bde68f);
+}
+
 .dock {
   position: fixed;
   left: 50%;
@@ -69,16 +205,38 @@
   z-index: 2100;
   transform: translateX(-50%);
   display: flex;
-  gap: 10px;
-  padding: 10px 12px 15px;
-  border: 1px solid var(--line);
-  border-radius: 28px;
-  background: rgba(255,255,255,.36);
-  backdrop-filter: blur(22px);
-  box-shadow: 0 18px 50px rgba(0,0,0,.2);
+  gap: 8px;
+  padding: 9px 10px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--solid) 62%, transparent);
+  backdrop-filter: blur(22px) saturate(1.25);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .18);
 }
-.dock button { position: relative; border: 0; background: transparent; padding: 0; cursor: pointer; transition: transform .16s; }
-.dock button:hover { transform: translateY(-6px) scale(1.04); }
+
+.dock button {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  border: 0;
+  border-radius: 13px;
+  background: transparent;
+  padding: 2px;
+  cursor: pointer;
+  transition: transform .16s ease, background .16s ease;
+}
+
+.dock button:hover {
+  background: rgba(255, 255, 255, .28);
+  transform: translateY(-5px);
+}
+
+.dock .app-glyph {
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+}
+
 .dock button::after {
   content: "";
   position: absolute;
@@ -86,9 +244,16 @@
   bottom: -7px;
   width: 5px;
   height: 5px;
-  border-radius: 50%;
+  border-radius: 999px;
   transform: translateX(-50%) scale(0);
   background: var(--strong);
+  transition: width .16s ease, transform .16s ease;
 }
-.dock button.running::after { transform: translateX(-50%) scale(1); }
-.dock button.active::after { width: 18px; border-radius: 999px; }
+
+.dock button.running::after {
+  transform: translateX(-50%) scale(1);
+}
+
+.dock button.active::after {
+  width: 18px;
+}

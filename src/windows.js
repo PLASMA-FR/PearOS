@@ -5,43 +5,70 @@ const desktop = document.querySelector("#desktop");
 const activeLabel = document.querySelector("#activeApp");
 const mobile = matchMedia("(max-width:760px)");
 
+function dockSpace() {
+  return mobile.matches ? 118 : 112;
+}
+
 function area(width, height) {
   return {
-    left: 8,
-    top: 44,
-    right: Math.max(8, innerWidth - width - 8),
-    bottom: Math.max(44, innerHeight - height - 96)
+    left: 10,
+    top: 46,
+    right: Math.max(10, innerWidth - width - 10),
+    bottom: Math.max(46, innerHeight - height - dockSpace())
   };
 }
 
 function mobileBox() {
   return {
     left: 10,
-    top: 52,
-    width: Math.max(300, innerWidth - 20),
-    height: Math.max(260, innerHeight - 132)
+    top: 50,
+    width: Math.max(1, innerWidth - 20),
+    height: Math.max(180, innerHeight - 136)
+  };
+}
+
+function maximizeBox() {
+  return mobile.matches ? mobileBox() : {
+    left: 14,
+    top: 48,
+    width: Math.max(320, innerWidth - 28),
+    height: Math.max(280, innerHeight - 146)
   };
 }
 
 function clamp(box) {
   if (mobile.matches) return mobileBox();
-  const width = Math.min(Math.max(box.width || 520, 320), Math.max(320, innerWidth - 20));
-  const height = Math.min(Math.max(box.height || 340, 240), Math.max(240, innerHeight - 126));
+  const maxWidth = Math.max(320, innerWidth - 20);
+  const maxHeight = Math.max(260, innerHeight - dockSpace() - 46);
+  const width = Math.min(Math.max(box.width ?? 560, 320), maxWidth);
+  const height = Math.min(Math.max(box.height ?? 360, 260), maxHeight);
   const bounds = area(width, height);
   return {
     width,
     height,
-    left: Math.min(Math.max(box.left || 90, bounds.left), bounds.right),
-    top: Math.min(Math.max(box.top || 70, bounds.top), bounds.bottom)
+    left: Math.min(Math.max(box.left ?? 90, bounds.left), bounds.right),
+    top: Math.min(Math.max(box.top ?? 70, bounds.top), bounds.bottom)
   };
+}
+
+function defaultGeometry(id) {
+  const index = Math.max(0, Object.keys(appMeta).indexOf(id));
+  const app = appMeta[id];
+  return clamp({ left: 96 + index * 34, top: 74 + index * 24, width: app[3], height: app[4] });
 }
 
 function geometry(id) {
   const stored = getJson("pear-windows", {});
-  if (stored[id]) return clamp(stored[id]);
-  const index = Object.keys(appMeta).indexOf(id);
-  const app = appMeta[id];
-  return clamp({ left: 96 + index * 32, top: 72 + index * 24, width: app[3], height: app[4] });
+  return stored[id] ? clamp(stored[id]) : defaultGeometry(id);
+}
+
+function currentBox(win) {
+  return {
+    left: parseFloat(win.style.left),
+    top: parseFloat(win.style.top),
+    width: parseFloat(win.style.width),
+    height: parseFloat(win.style.height)
+  };
 }
 
 function place(win, box) {
@@ -54,13 +81,27 @@ function place(win, box) {
 function save(id, win) {
   if (mobile.matches || win.classList.contains("maximized")) return;
   const all = getJson("pear-windows", {});
-  all[id] = {
-    left: parseFloat(win.style.left),
-    top: parseFloat(win.style.top),
-    width: parseFloat(win.style.width),
-    height: parseFloat(win.style.height)
-  };
+  all[id] = currentBox(win);
   setJson("pear-windows", all);
+}
+
+function setDesktopActive() {
+  activeApp = "desktop";
+  activeLabel.textContent = "Desktop";
+  openWindows.forEach(win => win.classList.remove("active"));
+  updateDock();
+}
+
+function visibleWindows(exceptId) {
+  return [...openWindows.entries()]
+    .filter(([id, win]) => id !== exceptId && !win.classList.contains("minimized"))
+    .sort((a, b) => Number(b[1].style.zIndex || 0) - Number(a[1].style.zIndex || 0));
+}
+
+function focusNextWindow(exceptId) {
+  const next = visibleWindows(exceptId)[0];
+  if (next) focusWindow(next[0]);
+  else setDesktopActive();
 }
 
 function updateDock() {
@@ -74,7 +115,7 @@ function updateDock() {
 
 function focusWindow(id) {
   const win = openWindows.get(id);
-  if (!win) return;
+  if (!win || win.classList.contains("minimized")) return;
   topZ += 1;
   activeApp = id;
   win.style.zIndex = topZ;
@@ -87,17 +128,16 @@ function focusWindow(id) {
 function maximizeWindow(win, id) {
   if (win.classList.contains("maximized")) {
     win.classList.remove("maximized");
-    place(win, geometry(id));
+    const restored = getJson(`pear-restore-${id}`, null);
+    place(win, clamp(restored || geometry(id)));
+    removeValue(`pear-restore-${id}`);
+    save(id, win);
     return;
   }
+  setJson(`pear-restore-${id}`, currentBox(win));
   save(id, win);
   win.classList.add("maximized");
-  place(win, {
-    left: mobile.matches ? 10 : 12,
-    top: mobile.matches ? 52 : 48,
-    width: mobile.matches ? innerWidth - 20 : innerWidth - 24,
-    height: mobile.matches ? innerHeight - 132 : innerHeight - 134
-  });
+  place(win, maximizeBox());
 }
 
 function openApp(id) {
@@ -114,7 +154,17 @@ function openApp(id) {
   win.dataset.app = id;
   win.setAttribute("role", "region");
   win.setAttribute("aria-label", `${app[0]} window`);
-  win.innerHTML = `<div class="titlebar"><div class="controls"><button class="close" aria-label="Close ${app[0]}"></button><button class="minimize" aria-label="Minimize ${app[0]}"></button><button class="maximize" aria-label="Maximize ${app[0]}"></button></div><span class="title">${app[0]}</span><span class="small">pearOS</span></div><div class="window-body"></div><div class="resize-handle" tabindex="0" role="separator" aria-label="Resize ${app[0]}"></div>`;
+  win.innerHTML = `<div class="titlebar">
+    <div class="controls">
+      <button class="close" aria-label="Close ${app[0]}"></button>
+      <button class="minimize" aria-label="Minimize ${app[0]}"></button>
+      <button class="maximize" aria-label="Maximize ${app[0]}"></button>
+    </div>
+    <span class="title">${app[0]}</span>
+    <span class="small">${app[5]}</span>
+  </div>
+  <div class="window-body"></div>
+  <div class="resize-handle" tabindex="0" role="separator" aria-label="Resize ${app[0]}"></div>`;
   place(win, geometry(id));
   desktop.appendChild(win);
   openWindows.set(id, win);
@@ -128,20 +178,26 @@ function wireWindow(win, id) {
   win.addEventListener("pointerdown", () => focusWindow(id));
   win.querySelector(".close").addEventListener("click", event => {
     event.stopPropagation();
+    const wasActive = activeApp === id;
     win.remove();
     openWindows.delete(id);
-    activeApp = "desktop";
-    activeLabel.textContent = "Desktop";
-    updateDock();
+    if (wasActive) focusNextWindow(id);
+    else updateDock();
   });
   win.querySelector(".minimize").addEventListener("click", event => {
     event.stopPropagation();
     win.classList.add("minimized");
-    activeLabel.textContent = "Desktop";
-    updateDock();
+    win.classList.remove("active");
+    if (activeApp === id) focusNextWindow(id);
+    else updateDock();
   });
   win.querySelector(".maximize").addEventListener("click", event => {
     event.stopPropagation();
+    maximizeWindow(win, id);
+    focusWindow(id);
+  });
+  win.querySelector(".titlebar").addEventListener("dblclick", event => {
+    if (event.target.closest("button")) return;
     maximizeWindow(win, id);
     focusWindow(id);
   });
@@ -168,6 +224,7 @@ function drag(win, id) {
     };
     const stop = () => {
       win.classList.remove("dragging");
+      if (bar.hasPointerCapture(event.pointerId)) bar.releasePointerCapture(event.pointerId);
       bar.removeEventListener("pointermove", move);
       bar.removeEventListener("pointerup", stop);
       bar.removeEventListener("pointercancel", stop);
@@ -191,10 +248,13 @@ function resize(win, id) {
     const startWidth = parseFloat(win.style.width);
     const startHeight = parseFloat(win.style.height);
     const move = moveEvent => {
-      win.style.width = `${Math.min(Math.max(startWidth + moveEvent.clientX - startX, 320), innerWidth - parseFloat(win.style.left) - 8)}px`;
-      win.style.height = `${Math.min(Math.max(startHeight + moveEvent.clientY - startY, 240), innerHeight - parseFloat(win.style.top) - 96)}px`;
+      const maxWidth = innerWidth - parseFloat(win.style.left) - 10;
+      const maxHeight = innerHeight - parseFloat(win.style.top) - dockSpace();
+      win.style.width = `${Math.min(Math.max(startWidth + moveEvent.clientX - startX, 320), maxWidth)}px`;
+      win.style.height = `${Math.min(Math.max(startHeight + moveEvent.clientY - startY, 260), maxHeight)}px`;
     };
     const stop = () => {
+      if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId);
       handle.removeEventListener("pointermove", move);
       handle.removeEventListener("pointerup", stop);
       handle.removeEventListener("pointercancel", stop);
@@ -206,11 +266,25 @@ function resize(win, id) {
   });
 }
 
+function resetWindowLayout() {
+  removeValue("pear-windows");
+  openWindows.forEach((win, id) => {
+    removeValue(`pear-restore-${id}`);
+    win.classList.remove("maximized");
+    win.classList.remove("minimized");
+    place(win, defaultGeometry(id));
+  });
+  focusNextWindow();
+}
+
 function initWindowLaunchers() {
   document.querySelectorAll("[data-open]").forEach(button => {
     button.addEventListener("click", () => openApp(button.dataset.open));
   });
+  desktop.addEventListener("pointerdown", event => {
+    if (event.target === desktop) setDesktopActive();
+  });
   window.addEventListener("resize", () => {
-    openWindows.forEach((win, id) => place(win, win.classList.contains("maximized") ? mobileBox() : clamp(geometry(id))));
+    openWindows.forEach((win, id) => place(win, win.classList.contains("maximized") ? maximizeBox() : clamp(currentBox(win) || geometry(id))));
   });
 }

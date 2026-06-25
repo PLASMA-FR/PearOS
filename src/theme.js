@@ -1,8 +1,11 @@
+const themes = new Set(["light", "midnight", "graphite"]);
+
 function setTheme(theme) {
-  document.documentElement.dataset.theme = theme;
-  setValue("pear-theme", theme);
+  const nextTheme = themes.has(theme) ? theme : "light";
+  document.documentElement.dataset.theme = nextTheme;
+  setValue("pear-theme", nextTheme);
   document.querySelectorAll(".theme-button").forEach(button => {
-    button.classList.toggle("active", button.dataset.theme === theme);
+    button.classList.toggle("active", button.dataset.theme === nextTheme);
   });
 }
 

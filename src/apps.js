@@ -13,21 +13,65 @@ function renderApp(id) {
 function wireApp(win, id, openApp) {
   if (id === "finder") wireFinder(win, openApp);
   if (id === "terminal") wireTerminal(win, openApp);
-  if (id === "notes") win.querySelector("textarea").addEventListener("input", event => setValue("pear-note", event.target.value));
+  if (id === "notes") wireNotes(win);
   if (id === "devlogs") wireLogs(win);
-  if (id === "settings") win.querySelectorAll(".theme-button").forEach(button => button.addEventListener("click", () => setTheme(button.dataset.theme)));
+  if (id === "settings") wireSettings(win);
+}
+
+function folderNames() {
+  return Object.keys(folders);
 }
 
 function finder() {
-  const buttons = Object.keys(folders).map((name, index) => `<button data-folder="${name}" class="${index ? "" : "active"}">${name}</button>`).join("");
-  return `<div class="grid"><aside class="sidebar">${buttons}</aside><section class="files"></section></div>`;
+  const buttons = folderNames()
+    .map((name, index) => `<button data-folder="${name}" class="${index ? "" : "active"}">${name}</button>`)
+    .join("");
+
+  return `<div class="finder-shell">
+    <aside class="sidebar">${buttons}</aside>
+    <section class="files" aria-label="Files"></section>
+    <aside class="file-preview" aria-live="polite"></aside>
+  </div>`;
 }
 
-function renderFolder(win, name) {
-  win.querySelector(".files").innerHTML = folders[name].map(file => {
-    const open = file[2] ? ` data-open="${file[2]}"` : "";
-    return `<button class="file-button"${open}><strong>${file[0]}</strong><span>${file[1]}</span></button>`;
+function fileGlyph(file) {
+  if (file.app && appMeta[file.app]) return `<span class="app-glyph ${appMeta[file.app][2]}">${appMeta[file.app][1]}</span>`;
+  if (file.kind === "Code") return `<span class="doc-glyph">JS</span>`;
+  if (file.kind === "Stylesheet") return `<span class="doc-glyph">CSS</span>`;
+  if (file.kind === "System") return `<span class="doc-glyph">SYS</span>`;
+  return `<span class="doc-glyph">TXT</span>`;
+}
+
+function renderFolder(win, name, selectedIndex = 0) {
+  const files = folders[name] || [];
+  win.dataset.folder = name;
+  win.querySelector(".files").innerHTML = files.map((file, index) => {
+    const selected = index === selectedIndex ? " selected" : "";
+    return `<button class="file-button${selected}" data-file-index="${index}">
+      ${fileGlyph(file)}
+      <span><strong>${escapeHtml(file.name)}</strong><small>${escapeHtml(file.kind)}</small></span>
+    </button>`;
   }).join("");
+  renderPreview(win, files[selectedIndex]);
+}
+
+function renderPreview(win, file) {
+  const preview = win.querySelector(".file-preview");
+  if (!file) {
+    preview.innerHTML = `<div class="empty-preview">No file selected</div>`;
+    return;
+  }
+  const launch = file.app ? `<button class="primary-action" data-open="${file.app}">Open ${escapeHtml(appMeta[file.app][0])}</button>` : "";
+  preview.innerHTML = `<div class="preview-head">
+    ${fileGlyph(file)}
+    <div>
+      <h2>${escapeHtml(file.name)}</h2>
+      <p>${escapeHtml(file.kind)}</p>
+    </div>
+  </div>
+  <p>${escapeHtml(file.detail)}</p>
+  ${file.body ? `<pre>${escapeHtml(file.body)}</pre>` : ""}
+  ${launch}`;
 }
 
 function wireFinder(win, openApp) {
@@ -40,23 +84,67 @@ function wireFinder(win, openApp) {
     });
   });
   win.addEventListener("click", event => {
-    const button = event.target.closest("[data-open]");
-    if (button) openApp(button.dataset.open);
+    const launch = event.target.closest("[data-open]");
+    if (launch) {
+      openApp(launch.dataset.open);
+      return;
+    }
+    const fileButton = event.target.closest("[data-file-index]");
+    if (!fileButton) return;
+    win.querySelectorAll("[data-file-index]").forEach(item => item.classList.remove("selected"));
+    fileButton.classList.add("selected");
+    const file = folders[win.dataset.folder][Number(fileButton.dataset.fileIndex)];
+    renderPreview(win, file);
+  });
+  win.addEventListener("dblclick", event => {
+    const fileButton = event.target.closest("[data-file-index]");
+    if (!fileButton) return;
+    const file = folders[win.dataset.folder][Number(fileButton.dataset.fileIndex)];
+    if (file.app) openApp(file.app);
   });
 }
 
 function terminal() {
-  return `<div class="terminal"><div class="terminal-output">pearOS Terminal\nType help to get started.</div><form><span>guest@pearOS %</span><input aria-label="Terminal command" autocomplete="off" spellcheck="false"></form></div>`;
+  return `<div class="terminal">
+    <div class="terminal-output">pearOS Terminal
+Type help to get started.</div>
+    <form><span>guest@pearOS %</span><input aria-label="Terminal command" autocomplete="off" spellcheck="false"></form>
+  </div>`;
 }
 
 function reply(command, openApp) {
   const value = command.trim().toLowerCase();
   if (!value) return "";
-  if (value === "help") return "help, about, apps, open finder, open notes, open devlogs, open settings, clear, whoami";
+  if (value === "help") {
+    return [
+      "help                 show commands",
+      "apps                 list apps",
+      "open notes           open an app",
+      "theme midnight       switch theme",
+      "reset layout         restore window positions",
+      "date                 show local date",
+      "whoami               show current user",
+      "clear                clear terminal"
+    ].join("\n");
+  }
   if (value === "about") return "pearOS is a static browser desktop built for a Hack Club WebOS mission.";
   if (value === "apps") return Object.values(appMeta).map(app => app[0]).join(", ");
   if (value === "whoami") return "guest student using a public pearOS demo";
+  if (value === "date") return new Date().toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
   if (value === "clear") return "clear";
+  if (value === "reset layout") {
+    resetWindowLayout();
+    return "Window layout reset.";
+  }
+  if (value === "theme") return "Themes: light, midnight, graphite";
+  if (value.startsWith("theme ")) {
+    const theme = value.replace("theme ", "").trim();
+    if (["light", "midnight", "graphite"].includes(theme)) {
+      setTheme(theme);
+      return `Theme changed to ${theme}.`;
+    }
+    return `No theme named ${theme}.`;
+  }
   if (value.startsWith("open ")) {
     const id = value.replace("open ", "").trim();
     if (appMeta[id]) {
@@ -101,12 +189,27 @@ function wireTerminal(win, openApp) {
 
 function notes() {
   const note = getValue("pear-note", "pearOS idea: make a small desktop that feels polished but still honest enough for a student project. Keep it static, friendly, and easy to test.");
-  return `<div class="note-card"><h2>Notes</h2><p class="help-text">This note saves in localStorage on your browser.</p><textarea class="notes-area" aria-label="pearOS note">${escapeHtml(note)}</textarea></div>`;
+  return `<div class="note-card">
+    <header class="note-header">
+      <div><h2>Notes</h2><p class="help-text">Saved locally in this browser</p></div>
+      <span class="note-count">${note.length} chars</span>
+    </header>
+    <textarea class="notes-area" aria-label="pearOS note">${escapeHtml(note)}</textarea>
+  </div>`;
+}
+
+function wireNotes(win) {
+  const area = win.querySelector("textarea");
+  const count = win.querySelector(".note-count");
+  area.addEventListener("input", event => {
+    setValue("pear-note", event.target.value);
+    count.textContent = `${event.target.value.length} chars`;
+  });
 }
 
 function devlogs() {
-  const tabs = logs.map((log, index) => `<button class="tab-button ${index ? "" : "active"}" role="tab" data-log="${index}">Devlog ${index + 1}</button>`).join("");
-  return `<div><div class="tabs" role="tablist">${tabs}</div><article class="devlog-text" tabindex="0"></article></div>`;
+  const tabs = logs.map((log, index) => `<button class="tab-button ${index ? "" : "active"}" role="tab" aria-selected="${index ? "false" : "true"}" data-log="${index}">Devlog ${index + 1}</button>`).join("");
+  return `<div class="devlog-app"><div class="tabs" role="tablist">${tabs}</div><article class="devlog-text" tabindex="0"></article></div>`;
 }
 
 function renderLog(win, index) {
@@ -117,8 +220,12 @@ function wireLogs(win) {
   renderLog(win, 0);
   win.querySelectorAll(".tab-button").forEach(button => {
     button.addEventListener("click", () => {
-      win.querySelectorAll(".tab-button").forEach(item => item.classList.remove("active"));
+      win.querySelectorAll(".tab-button").forEach(item => {
+        item.classList.remove("active");
+        item.setAttribute("aria-selected", "false");
+      });
       button.classList.add("active");
+      button.setAttribute("aria-selected", "true");
       renderLog(win, Number(button.dataset.log));
     });
   });
@@ -126,9 +233,52 @@ function wireLogs(win) {
 
 function settings() {
   const theme = getValue("pear-theme", "light");
-  return `<h2>Settings</h2><p class="help-text">Pick a theme. pearOS saves the choice locally.</p><div class="cards"><button class="theme-button ${theme === "light" ? "active" : ""}" data-theme="light"><strong>Pear Light</strong><span>Warm paper and soft green glass.</span></button><button class="theme-button ${theme === "midnight" ? "active" : ""}" data-theme="midnight"><strong>Midnight Green</strong><span>Dark desktop with bright pear accents.</span></button><button class="theme-button ${theme === "graphite" ? "active" : ""}" data-theme="graphite"><strong>Graphite</strong><span>Neutral and presentation friendly.</span></button></div>`;
+  const themeButton = (id, title, detail, colors) => `<button class="theme-button ${theme === id ? "active" : ""}" data-theme="${id}">
+    <span class="swatches">${colors.map(color => `<i style="background:${color}"></i>`).join("")}</span>
+    <strong>${title}</strong>
+    <span>${detail}</span>
+  </button>`;
+
+  return `<div class="settings-app">
+    <h2>Settings</h2>
+    <section class="settings-section">
+      <h3>Appearance</h3>
+      <div class="cards">
+        ${themeButton("light", "Pear Light", "Warm paper, green glass, and teal highlights.", ["#f7f0de", "#76a943", "#2f8c9d"])}
+        ${themeButton("midnight", "Midnight Green", "Dark desktop with bright pear accents.", ["#0d1511", "#8fcf67", "#345e80"])}
+        ${themeButton("graphite", "Graphite", "Neutral surfaces with a softer pear accent.", ["#232428", "#a5b66a", "#718195"])}
+      </div>
+    </section>
+    <section class="settings-section">
+      <h3>Windows</h3>
+      <button class="secondary-action" data-action="reset-layout">Reset window layout</button>
+    </section>
+  </div>`;
+}
+
+function wireSettings(win) {
+  win.querySelectorAll(".theme-button").forEach(button => {
+    button.addEventListener("click", () => setTheme(button.dataset.theme));
+  });
+  win.querySelector("[data-action='reset-layout']").addEventListener("click", () => resetWindowLayout());
 }
 
 function about() {
-  return `<h2>About pearOS</h2><p>pearOS is a macOS-inspired web desktop with its own pear identity, made for Hack Club using plain HTML, CSS, and JavaScript.</p><p>No Apple logos, official icons, copied wallpapers, login screens, or build tools are used.</p><h3>Mission checklist</h3><ul class="checklist"><li>✓ Multiple draggable windows</li><li>✓ Original design, not a guide copy</li><li>✓ Three devlogs in the OS and Markdown files</li><li>✓ Extra feature: Command Palette</li><li>✓ Public and testable with no password</li></ul>`;
+  return `<div class="about-app">
+    <h2>About pearOS</h2>
+    <p>pearOS is a macOS-inspired web desktop with its own pear identity, made for Hack Club using plain HTML, CSS, and JavaScript.</p>
+    <div class="about-grid">
+      <div><strong>Stack</strong><span>Static HTML, CSS, JS</span></div>
+      <div><strong>Storage</strong><span>Browser localStorage</span></div>
+      <div><strong>Access</strong><span>No password gate</span></div>
+    </div>
+    <h3>Mission checklist</h3>
+    <ul class="checklist">
+      <li>✓ Multiple draggable windows</li>
+      <li>✓ Original design, not a guide copy</li>
+      <li>✓ Three devlogs in the OS and Markdown files</li>
+      <li>✓ Extra feature: Command Palette</li>
+      <li>✓ Public and testable with no password</li>
+    </ul>
+  </div>`;
 }

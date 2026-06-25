@@ -1,19 +1,153 @@
 .window.maximized {
-  left: 12px;
+  left: 14px;
   top: 48px;
-  width: calc(100vw - 24px);
-  height: calc(100vh - 134px);
+  width: calc(100vw - 28px);
+  height: calc(100vh - 146px);
 }
+
+@media (max-width: 900px) {
+  .finder-shell {
+    grid-template-columns: 132px minmax(210px, 1fr);
+  }
+
+  .file-preview {
+    grid-column: 1 / -1;
+    max-height: 170px;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 760px) {
-  .menus, .status span:not(#clock) { display: none; }
-  .desktop { padding: 18px 12px; }
-  .desktop-icon { width: 76px; margin-right: 8px; }
-  .dock { width: calc(100vw - 20px); justify-content: space-around; bottom: 10px; }
-  .dock .app-glyph { width: 42px; height: 42px; }
-  .window { left: 10px; top: 52px; width: calc(100vw - 20px); height: calc(100vh - 132px); min-width: 0; border-radius: 18px; }
-  .titlebar { cursor: default; }
-  .resize-handle { display: none; }
-  .grid { grid-template-columns: 1fr; }
-  .sidebar { display: flex; gap: 6px; overflow: auto; }
-  .sidebar button { flex: 0 0 auto; width: auto; }
+  .menu-bar {
+    gap: 10px;
+    padding: 0 10px;
+  }
+
+  .menus,
+  .status span:not(#clock) {
+    display: none;
+  }
+
+  #activeApp {
+    min-width: 0;
+  }
+
+  .desktop {
+    inset: 36px 0 92px;
+    grid-template-columns: repeat(auto-fill, 76px);
+    gap: 14px 10px;
+    padding: 18px 12px;
+  }
+
+  .desktop-icon {
+    width: 76px;
+    min-height: 80px;
+  }
+
+  .desktop-icon .app-glyph {
+    width: 46px;
+    height: 46px;
+  }
+
+  .dock {
+    width: calc(100vw - 20px);
+    justify-content: space-around;
+    gap: 4px;
+    bottom: 10px;
+    padding: 8px 8px 13px;
+  }
+
+  .dock button {
+    width: 46px;
+    height: 46px;
+  }
+
+  .window,
+  .window.maximized {
+    left: 10px;
+    top: 50px;
+    width: calc(100vw - 20px);
+    height: calc(100vh - 136px);
+    min-width: 0;
+    min-height: 0;
+    border-radius: 12px;
+  }
+
+  .titlebar {
+    cursor: default;
+  }
+
+  .window .small {
+    display: none;
+  }
+
+  .window-body {
+    padding: 12px;
+  }
+
+  .resize-handle {
+    display: none;
+  }
+
+  .finder-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(140px, 1fr) minmax(120px, auto);
+  }
+
+  .sidebar {
+    display: flex;
+    gap: 6px;
+    overflow: auto;
+    padding: 8px;
+  }
+
+  .sidebar button {
+    flex: 0 0 auto;
+    width: auto;
+    white-space: nowrap;
+  }
+
+  .files {
+    grid-template-columns: 1fr;
+  }
+
+  .file-preview {
+    max-height: 190px;
+  }
+
+  .terminal form {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .terminal input {
+    width: 100%;
+  }
+
+  .cards,
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .brand strong {
+    display: none;
+  }
+
+  .dock button {
+    width: 42px;
+    height: 42px;
+  }
+
+  .controls {
+    gap: 6px;
+  }
+
+  .title {
+    font-size: 12px;
+  }
 }

@@ -1,45 +1,69 @@
 :root {
-  --accent: #78ad48;
-  --strong: #31591f;
-  --bg1: #f8f0dc;
-  --bg2: #cde8a8;
-  --panel: rgba(255, 252, 240, .9);
-  --solid: rgba(255, 255, 250, .97);
-  --glass: rgba(255, 255, 255, .54);
-  --text: #202718;
-  --muted: #5d684f;
-  --line: rgba(31, 50, 20, .16);
-  --shadow: 0 24px 70px rgba(39, 53, 20, .24);
+  --accent: #6f9f35;
+  --accent-2: #2e8798;
+  --accent-3: #d39137;
+  --strong: #24481c;
+  --bg1: #f4eddb;
+  --bg2: #cfe2bd;
+  --panel: rgba(255, 252, 243, .88);
+  --solid: #fffdf5;
+  --glass: rgba(255, 255, 255, .66);
+  --text: #20251b;
+  --muted: #65705e;
+  --line: rgba(38, 52, 27, .16);
+  --line-strong: rgba(38, 52, 27, .28);
+  --shadow: 0 22px 64px rgba(42, 52, 32, .25);
+  --shadow-soft: 0 12px 28px rgba(42, 52, 32, .16);
 }
+
 [data-theme="midnight"] {
-  --accent: #9ed36d;
+  --accent: #8ecf67;
+  --accent-2: #63b7cb;
+  --accent-3: #e2a65c;
   --strong: #e5fac2;
-  --bg1: #0d150f;
-  --bg2: #25482a;
-  --panel: rgba(17, 27, 20, .92);
-  --solid: rgba(25, 37, 28, .98);
-  --glass: rgba(17, 28, 20, .68);
+  --bg1: #0d1511;
+  --bg2: #243a31;
+  --panel: rgba(19, 28, 24, .9);
+  --solid: #16221d;
+  --glass: rgba(18, 27, 23, .74);
   --text: #f4faea;
-  --muted: #b7c7aa;
-  --line: rgba(235, 255, 214, .16);
-  --shadow: 0 24px 80px rgba(0, 0, 0, .5);
+  --muted: #b8c8ad;
+  --line: rgba(235, 255, 214, .15);
+  --line-strong: rgba(235, 255, 214, .26);
+  --shadow: 0 24px 80px rgba(0, 0, 0, .48);
+  --shadow-soft: 0 14px 34px rgba(0, 0, 0, .35);
   color-scheme: dark;
 }
+
 [data-theme="graphite"] {
-  --accent: #a6be70;
+  --accent: #a5b66a;
+  --accent-2: #7ca6be;
+  --accent-3: #d0a15e;
   --strong: #f0f7cf;
   --bg1: #202126;
-  --bg2: #56594f;
-  --panel: rgba(39, 40, 44, .92);
-  --solid: rgba(55, 56, 61, .98);
-  --glass: rgba(45, 46, 50, .62);
+  --bg2: #51575a;
+  --panel: rgba(38, 40, 44, .9);
+  --solid: #303238;
+  --glass: rgba(43, 45, 50, .7);
   --text: #f3f3ef;
-  --muted: #c9c9bf;
+  --muted: #c8c9c0;
   --line: rgba(255, 255, 255, .14);
+  --line-strong: rgba(255, 255, 255, .25);
   --shadow: 0 24px 80px rgba(0, 0, 0, .48);
+  --shadow-soft: 0 14px 34px rgba(0, 0, 0, .32);
   color-scheme: dark;
 }
-* { box-sizing: border-box; }
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -47,15 +71,61 @@ body {
   font-family: ui-sans-serif, system-ui, "Segoe UI", sans-serif;
   color: var(--text);
   background: linear-gradient(135deg, var(--bg1), var(--bg2));
+  line-height: 1.45;
   user-select: none;
 }
-button, input, textarea { font: inherit; color: inherit; }
-button:focus-visible, input:focus-visible, textarea:focus-visible {
-  outline: 3px solid var(--accent);
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent-2) 70%, white);
   outline-offset: 3px;
 }
+
 .wallpaper {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at 18% 22%, rgba(255,255,255,.72), transparent 18rem), radial-gradient(ellipse at 80% 18%, rgba(126,176,73,.42), transparent 24rem), radial-gradient(ellipse at 55% 84%, rgba(255,223,154,.55), transparent 28rem), linear-gradient(135deg, var(--bg1), var(--bg2));
+  overflow: hidden;
+  background:
+    linear-gradient(122deg, rgba(255, 246, 220, .86), rgba(255, 246, 220, 0) 42%),
+    linear-gradient(145deg, color-mix(in srgb, var(--bg1) 72%, white), color-mix(in srgb, var(--accent) 24%, var(--bg2)) 52%, color-mix(in srgb, var(--accent-2) 22%, var(--bg2))),
+    linear-gradient(24deg, rgba(211, 145, 55, .22), transparent 38%);
+}
+
+.wallpaper::before {
+  content: "";
+  position: absolute;
+  right: clamp(24px, 8vw, 120px);
+  top: clamp(72px, 14vh, 140px);
+  width: clamp(240px, 34vw, 480px);
+  aspect-ratio: .82;
+  border-radius: 58% 42% 54% 46% / 42% 44% 58% 62%;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--accent) 48%, white), color-mix(in srgb, var(--accent-2) 30%, transparent)),
+    var(--accent);
+  opacity: .18;
+  transform: rotate(-9deg);
+}
+
+.wallpaper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .1) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, transparent, black 18%, black 72%, transparent);
+  opacity: .35;
 }
