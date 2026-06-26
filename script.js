@@ -140,4 +140,3 @@ initPalette(openApp);
 updateClock();
 loadBattery();
 setInterval(updateClock, 30000);
-setTimeout(stageShowcase, 120);
