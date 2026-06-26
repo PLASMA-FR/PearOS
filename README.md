@@ -1,5 +1,5 @@
 # pearOS
-
+# important i used some ai for polishing the frontend
 pearOS is a pear-themed web desktop made for a Hack Club WebOS-style mission. It is inspired by polished desktop operating systems, but it does not copy Apple logos, official macOS icons, proprietary wallpapers, or branded assets.
 
 The project is a complete static site using only HTML, CSS, and JavaScript. It works by opening `index.html`, running a small local server, or publishing the repository with GitHub Pages.
